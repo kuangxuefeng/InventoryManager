@@ -7,13 +7,18 @@ import android.os.Bundle;
 import android.view.Window;
 
 import com.kxf.inventorymanager.AppConfig;
+import com.kxf.inventorymanager.MyApplication;
+import com.kxf.inventorymanager.entity.User;
 import com.kxf.inventorymanager.utils.LogUtil;
+
+import org.xutils.ex.DbException;
 
 public class BaseActivity extends Activity {
 
     private String tag = "";
     protected Activity mActivity;
     protected Context mContext;
+    protected User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +29,12 @@ public class BaseActivity extends Activity {
         tag = this.getPackageName() + "." + this.getLocalClassName();
         tag = "do in " + tag + AppConfig.BASE_ACTIVITY_LOG_INFO_STRING;
         LogUtil.e(tag);
+        String userName = MyApplication.getShare(LoginActivity.KEY_USER_NAME);
+        try {
+            user = MyApplication.db().selector(User.class).where("name", "=", userName).findFirst();
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

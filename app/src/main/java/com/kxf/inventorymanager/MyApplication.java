@@ -5,9 +5,12 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
+import com.kxf.inventorymanager.activity.JoinActivity;
+import com.kxf.inventorymanager.entity.User;
 import com.kxf.inventorymanager.utils.LogUtil;
 
 import org.xutils.DbManager;
+import org.xutils.ex.DbException;
 import org.xutils.x;
 
 import java.io.File;
@@ -26,6 +29,23 @@ public class MyApplication extends Application {
         Log.e("MyApplication", "BuildConfig.VERSION_CODE=" + BuildConfig.VERSION_CODE);
         Log.e("MyApplication", "BuildConfig.VERSION_NAME=" + BuildConfig.VERSION_NAME);
         initDB();
+
+        initData();
+    }
+
+    private void initData() {
+        try {
+            User u = MyApplication.db().selector(User.class).where("name", "=", JoinActivity.DEFAULT_ROOT_NAME).findFirst();
+            if (null == u){
+                u = new User();
+                u.setName(JoinActivity.DEFAULT_ROOT_NAME);
+                u.setPw(JoinActivity.DEFAULT_ROOT_PW);
+                u.setPermissions(2);
+                MyApplication.db().save(u);
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
     }
 
     public static MyApplication getInstance() {
@@ -44,6 +64,7 @@ public class MyApplication extends Application {
         if (xdb == null) {
             xdb = x.getDb(getDBConfig());
         }
+        LogUtil.e("xdb=" + xdb);
         return xdb;
     }
 

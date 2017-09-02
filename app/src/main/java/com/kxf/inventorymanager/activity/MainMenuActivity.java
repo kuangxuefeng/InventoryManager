@@ -14,7 +14,7 @@ import com.kxf.inventorymanager.R;
  * Created by kxf on 2017/9/2.
  */
 public class MainMenuActivity extends BaseActivity implements View.OnClickListener {
-    private Button btn_in, btn_out, btn_query, btn_ver;
+    private Button btn_in, btn_out, btn_query, btn_ver, btn_user;
     private static final int REQUEST_CODE_SCAN = 1000;
 
     @Override
@@ -29,11 +29,17 @@ public class MainMenuActivity extends BaseActivity implements View.OnClickListen
         btn_out = (Button) findViewById(R.id.btn_out);
         btn_query = (Button) findViewById(R.id.btn_query);
         btn_ver = (Button) findViewById(R.id.btn_ver);
+        btn_user = (Button) findViewById(R.id.btn_user);
 
         btn_in.setOnClickListener(this);
         btn_out.setOnClickListener(this);
         btn_query.setOnClickListener(this);
         btn_ver.setOnClickListener(this);
+        btn_user.setOnClickListener(this);
+
+        if (null != user && user.getPermissions() > 0){
+            btn_user.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -51,6 +57,9 @@ public class MainMenuActivity extends BaseActivity implements View.OnClickListen
             case R.id.btn_query:
                 break;
             case R.id.btn_ver:
+                break;
+            case R.id.btn_user:
+
                 break;
         }
         setAllBtnEnabled(true);
@@ -74,5 +83,6 @@ public class MainMenuActivity extends BaseActivity implements View.OnClickListen
         btn_out.setEnabled(enabled);
         btn_query.setEnabled(enabled);
         btn_ver.setEnabled(enabled);
+        btn_user.setEnabled(enabled);
     }
 }

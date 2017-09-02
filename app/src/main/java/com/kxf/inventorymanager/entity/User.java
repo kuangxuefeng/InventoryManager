@@ -1,14 +1,23 @@
 package com.kxf.inventorymanager.entity;
 
-import java.io.Serializable;
-public class User implements Serializable {
+import org.xutils.db.annotation.Column;
+import org.xutils.db.annotation.Table;
+
+@Table(name = "User")
+public class User {
+	@Column(name = "id", isId = true)
 	private int id;
+	@Column(name = "name")
 	private String name;
+	@Column(name = "pw")
 	private String pw;
-	private double money;
-	private int age;
+	@Column(name = "permissions")
+	private int permissions = 0;//0是普通用户，1是管理员，2是系统管理员
+	@Column(name = "tel")
 	private String tel;
+	@Column(name = "address")
 	private String address;
+	@Column(name = "info")
 	private String info;
 
 	public int getId() {
@@ -35,20 +44,12 @@ public class User implements Serializable {
 		this.pw = pw;
 	}
 
-	public double getMoney() {
-		return money;
+	public int getPermissions() {
+		return permissions;
 	}
 
-	public void setMoney(double money) {
-		this.money = money;
-	}
-
-	public int getAge() {
-		return age;
-	}
-
-	public void setAge(int age) {
-		this.age = age;
+	public void setPermissions(int permissions) {
+		this.permissions = permissions;
 	}
 
 	public String getTel() {
@@ -77,9 +78,14 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", pw=" + pw + ", money="
-				+ money + ", age=" + age + ", tel=" + tel + ", address="
-				+ address + ", info=" + info + "]";
+		return "User{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", pw='" + pw + '\'' +
+				", permissions=" + permissions +
+				", tel='" + tel + '\'' +
+				", address='" + address + '\'' +
+				", info='" + info + '\'' +
+				'}';
 	}
-
 }

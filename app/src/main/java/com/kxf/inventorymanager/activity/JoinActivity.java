@@ -9,26 +9,39 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.kxf.inventorymanager.MyApplication;
 import com.kxf.inventorymanager.R;
 import com.kxf.inventorymanager.entity.User;
+import com.kxf.inventorymanager.utils.LogUtil;
+
+import org.xutils.ex.DbException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class JoinActivity extends BaseActivity implements OnClickListener {
 
 	private static final String TAG = "JoinActivity";
+	public static final String DEFAULT_ROOT_NAME = "root";
+	public static final String DEFAULT_ROOT_PW = "qazwsx";
 	private Button btn_join_exit = null;
 	private Button btn_join_sure = null;
 	private EditText et_join_name = null;
 	private EditText et_join_pw = null;
 	private EditText et_join_pw_again = null;
-	private EditText et_join_age = null;
+	private Spinner et_join_qx = null;
 	private EditText et_join_tel = null;
 	private EditText et_join_address = null;
 	private EditText et_join_info = null;
-	private User user;
+	private List<String> data_list;
+	private ArrayAdapter<String> arr_adapter;
+	private User userNew;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +56,30 @@ public class JoinActivity extends BaseActivity implements OnClickListener {
 		et_join_name = (EditText) findViewById(R.id.et_join_name);
 		et_join_pw = (EditText) findViewById(R.id.et_join_pw);
 		et_join_pw_again = (EditText) findViewById(R.id.et_join_pw_again);
-		et_join_age = (EditText) findViewById(R.id.et_join_age);
+		et_join_qx = (Spinner) findViewById(R.id.et_join_qx);
 		et_join_tel = (EditText) findViewById(R.id.et_join_tel);
 		et_join_address = (EditText) findViewById(R.id.et_join_address);
 		et_join_info = (EditText) findViewById(R.id.et_join_info);
 		btn_join_exit.setOnClickListener(this);
 		btn_join_sure.setOnClickListener(this);
+		switch (user.getPermissions()){
+			case 1:
+				data_list = new ArrayList<>();
+				data_list.add("普通用户");
+				break;
+
+			case 2:
+				data_list = new ArrayList<>();
+				data_list.add("普通用户");
+				data_list.add("管理员");
+				break;
+		}
+		//适配器
+		arr_adapter= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, data_list);
+		//设置样式
+		arr_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		//加载适配器
+		et_join_qx.setAdapter(arr_adapter);
 	}
 
 	private Handler handler = new Handler() {
@@ -66,8 +97,8 @@ public class JoinActivity extends BaseActivity implements OnClickListener {
 						Toast.makeText(JoinActivity.this, "注册成功", Toast.LENGTH_LONG).show();
 						//添加给第一个Activity的返回值，并设置resultCode
 						Intent intent = new Intent();
-						intent.putExtra("name", user.getName());
-						intent.putExtra("pw", user.getPw());
+						intent.putExtra("name", userNew.getName());
+						intent.putExtra("pw", userNew.getPw());
 						setResult(RESULT_OK, intent);
 						finish();
 					} else if (requst == -10) {
@@ -106,6 +137,8 @@ public class JoinActivity extends BaseActivity implements OnClickListener {
 						}
 					}).start();
 				}
+				Toast.makeText(JoinActivity.this, "注册成功", Toast.LENGTH_LONG).show();
+				finish();
 				break;
 
 			default:
@@ -115,6 +148,7 @@ public class JoinActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private boolean chickData() {
+		User user;
 		String name = et_join_name.getText().toString().trim();
 		if ("".equals(name)) {
 			showDialogYes("用户名不能为空");
@@ -135,13 +169,8 @@ public class JoinActivity extends BaseActivity implements OnClickListener {
 			et_join_pw_again.setText(null);
 			return false;
 		}
-		String age = et_join_age.getText().toString().trim();
-		if ("".equals(age)|| Integer.parseInt(age) <= 0
-				|| Integer.parseInt(age) > 80) {
-			showDialogYes("请输入合法年龄");
-			et_join_age.setText(null);
-			return false;
-		}
+		int pos = et_join_qx.getSelectedItemPosition();
+		LogUtil.e("pos=" + pos);
 		String tel = et_join_tel.getText().toString().trim();
 		if ("".equals(tel)|| tel.length() != 11) {
 			showDialogYes("请输入11位手机号");
@@ -149,19 +178,36 @@ public class JoinActivity extends BaseActivity implements OnClickListener {
 			return false;
 		}
 		String address = et_join_address.getText().toString().trim();
-		if ("".equals(address)) {
-			showDialogYes("请输入地址");
-			et_join_address.setText(null);
-			return false;
-		}
+//		if ("".equals(address)) {
+//			showDialogYes("请输入地址");
+//			et_join_address.setText(null);
+//			return false;
+//		}
 		String info = et_join_info.getText().toString().trim();
 		user = new User();
 		user.setName(name);
 		user.setPw(pw);
-		user.setAge(Integer.parseInt(age));
 		user.setTel(tel);
 		user.setAddress(address);
 		user.setInfo(info);
+		user.setPermissions(pos);
+		User u = null;
+		try {
+			u = MyApplication.db().selector(User.class).where("name", "=", name).findFirst();
+		} catch (DbException e) {
+			e.printStackTrace();
+		}
+		if (null != u){
+			showDialogYes("用户名已存在");
+			et_join_name.setText(null);
+			return false;
+		}
+		try {
+			MyApplication.db().save(user);
+		} catch (DbException e) {
+			e.printStackTrace();
+		}
+		userNew = user;
 		return true;
 	}
 

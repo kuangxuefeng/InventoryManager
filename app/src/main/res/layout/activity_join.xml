@@ -17,7 +17,7 @@
     <LinearLayout
         android:id="@+id/ll_join_name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_below="@+id/tv_join"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp" >
@@ -41,10 +41,10 @@
     <LinearLayout
         android:id="@+id/ll_join_pw"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_below="@+id/ll_join_name"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" >
+        android:layout_marginTop="5dp" >
 
         <TextView
             android:id="@+id/tv_join_pw"
@@ -66,10 +66,10 @@
     <LinearLayout
         android:id="@+id/ll_join_pw_again"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_below="@+id/ll_join_pw"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" >
+        android:layout_marginTop="5dp" >
 
         <TextView
             android:id="@+id/tv_join_pw_again"
@@ -89,37 +89,36 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_join_age"
+        android:id="@+id/ll_join_qx"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_below="@+id/ll_join_pw_again"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" >
+        android:layout_marginTop="5dp" >
 
         <TextView
-            android:id="@+id/tv_join_age"
+            android:id="@+id/tv_join_qx"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="年      龄：" />
+            android:text="权      限：" />
 
-        <EditText
-            android:id="@+id/et_join_age"
-            android:layout_width="wrap_content"
+        <Spinner
+            android:id="@+id/et_join_qx"
+            android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:inputType="number"
-            android:ems="10"
-            android:hint="请输入年龄" >
-        </EditText>
+             >
+        </Spinner>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_join_tel"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ll_join_age"
+        android:layout_height="50dp"
+        android:layout_below="@+id/ll_join_qx"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" >
+        android:layout_marginTop="5dp" >
 
         <TextView
             android:id="@+id/tv_join_tel"
@@ -134,6 +133,7 @@
             android:layout_marginLeft="5dp"
             android:inputType="number"
             android:ems="10"
+            android:maxLength="11"
             android:hint="请输入11位手机号" >
         </EditText>
     </LinearLayout>
@@ -141,10 +141,10 @@
     <LinearLayout
         android:id="@+id/ll_join_address"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_below="@+id/ll_join_tel"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" >
+        android:layout_marginTop="5dp" >
 
         <TextView
             android:id="@+id/tv_join_address"
@@ -158,17 +158,17 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:ems="10"
-            android:hint="请输入地址" >
+            android:hint="地址可以不填" >
         </EditText>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_join_info"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_below="@+id/ll_join_address"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" >
+        android:layout_marginTop="5dp" >
 
         <TextView
             android:id="@+id/tv_join_info"
@@ -189,10 +189,10 @@
     <LinearLayout
         android:id="@+id/ll_join_btn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_below="@+id/ll_join_info"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" >
+        android:layout_marginTop="5dp" >
 
         <Button
             android:id="@+id/btn_join_exit"

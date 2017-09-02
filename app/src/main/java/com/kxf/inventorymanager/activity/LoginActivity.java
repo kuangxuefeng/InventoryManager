@@ -15,13 +15,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kxf.inventorymanager.BuildConfig;
+import com.kxf.inventorymanager.MyApplication;
 import com.kxf.inventorymanager.R;
 import com.kxf.inventorymanager.entity.User;
 
 public class LoginActivity extends BaseActivity implements OnClickListener {
 
     private String TAG = "LoginActivity";
-    private User user = null;
+    public static final String KEY_USER_NAME = "key_user_name";
+    public static final String KEY_USER_PW = "key_user_pw";
     private EditText et_name = null;
     private EditText et_pw = null;
     private Button btn_login = null;
@@ -87,6 +89,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                 btn_cancel.setEnabled(false);
                 btn_join.setEnabled(false);
 //                checkInput();
+
+                MyApplication.saveShare(KEY_USER_NAME, et_name.getText().toString().trim());
                 handler.sendEmptyMessage(1000);
                 break;
 

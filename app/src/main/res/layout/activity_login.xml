@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:ems="10"
-            android:text="tom" >
+            android:text="" >
 
             <requestFocus />
         </EditText>
@@ -68,7 +68,7 @@
             android:layout_marginLeft="5dp"
             android:ems="10"
             android:inputType="textPassword"
-            android:text="tom" >
+            android:text="" >
         </EditText>
     </LinearLayout>
 
@@ -103,6 +103,7 @@
         android:layout_marginTop="30dp"
         android:background="@drawable/selector_main_button"
         android:text="新用户注册"
+        android:visibility="gone"
         android:textColor="#00D000" />
 
     <TextView
