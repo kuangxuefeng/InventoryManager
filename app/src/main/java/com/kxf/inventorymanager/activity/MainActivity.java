@@ -1,6 +1,5 @@
-package com.kxf.inventorymanager;
+package com.kxf.inventorymanager.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -14,8 +13,9 @@ import android.widget.TextView;
 import com.google.zxing.WriterException;
 import com.karics.library.zxing.android.CaptureActivity;
 import com.karics.library.zxing.encode.CodeCreator;
+import com.kxf.inventorymanager.R;
 
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
 
 	private static final int REQUEST_CODE_SCAN = 0x0000;
 

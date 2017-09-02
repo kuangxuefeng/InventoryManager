@@ -1,6 +1,5 @@
 package com.karics.library.zxing.android;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -21,6 +20,7 @@ import com.google.zxing.Result;
 import com.karics.library.zxing.camera.CameraManager;
 import com.karics.library.zxing.view.ViewfinderView;
 import com.kxf.inventorymanager.R;
+import com.kxf.inventorymanager.activity.BaseActivity;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -31,7 +31,7 @@ import java.util.Map;
  * 然后在扫描成功的时候覆盖扫描结果
  * 
  */
-public final class CaptureActivity extends Activity implements
+public final class CaptureActivity extends BaseActivity implements
 		SurfaceHolder.Callback {
 
 	private static final String TAG = CaptureActivity.class.getSimpleName();
