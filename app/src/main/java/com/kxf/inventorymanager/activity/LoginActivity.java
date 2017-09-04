@@ -19,6 +19,8 @@ import com.kxf.inventorymanager.MyApplication;
 import com.kxf.inventorymanager.R;
 import com.kxf.inventorymanager.entity.User;
 
+import org.xutils.ex.DbException;
+
 public class LoginActivity extends BaseActivity implements OnClickListener {
 
     private String TAG = "LoginActivity";
@@ -88,10 +90,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                 btn_login.setEnabled(false);
                 btn_cancel.setEnabled(false);
                 btn_join.setEnabled(false);
-//                checkInput();
+                checkInput();
 
-                MyApplication.saveShare(KEY_USER_NAME, et_name.getText().toString().trim());
-                handler.sendEmptyMessage(1000);
+//                MyApplication.saveShare(KEY_USER_NAME, et_name.getText().toString().trim());
+//                handler.sendEmptyMessage(1000);
                 break;
 
             case R.id.btn_cancel:
@@ -186,20 +188,22 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         }
     };
 
-//    // 检查用户名和密码是否为空，和密码是否正确
-//    private void checkInput() {
-//        if ("".equals(et_name.getText().toString().trim())) {
-//            showDialog("请输入用户名");
-//            btn_login.setEnabled(true);
-//            btn_cancel.setEnabled(true);
-//            return;
-//        }
-//        if ("".equals(et_pw.getText().toString().trim())) {
-//            showDialog("请输入密码");
-//            btn_login.setEnabled(true);
-//            btn_cancel.setEnabled(true);
-//            return;
-//        }
+    // 检查用户名和密码是否为空，和密码是否正确
+    private void checkInput() {
+        String name = et_name.getText().toString().trim();
+        String pw = et_pw.getText().toString().trim();
+        if ("".equals(et_name.getText().toString().trim())) {
+            showDialog("请输入用户名");
+            btn_login.setEnabled(true);
+            btn_cancel.setEnabled(true);
+            return;
+        }
+        if ("".equals(et_pw.getText().toString().trim())) {
+            showDialog("请输入密码");
+            btn_login.setEnabled(true);
+            btn_cancel.setEnabled(true);
+            return;
+        }
 //        new Thread(new Runnable() {
 //
 //            @Override
@@ -225,7 +229,24 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 //                }
 //            }
 //        }).start();
-//    }
+        try {
+            user = MyApplication.db().selector(User.class).where("name", "=", name).findFirst();
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        if (null == user){
+            //登录失败,用户不存在
+            handler.sendEmptyMessage(1001);
+        }else {
+            if (pw.equals(user.getPw())){
+                MyApplication.saveShare(KEY_USER_NAME, name);
+                handler.sendEmptyMessage(1000);
+            }else {
+                //登录失败,密码错误
+                handler.sendEmptyMessage(1002);
+            }
+        }
+    }
 
     private void showDialog(String msg) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
