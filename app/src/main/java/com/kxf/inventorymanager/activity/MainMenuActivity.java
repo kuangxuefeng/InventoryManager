@@ -59,7 +59,8 @@ public class MainMenuActivity extends BaseActivity implements View.OnClickListen
             case R.id.btn_ver:
                 break;
             case R.id.btn_user:
-
+                intent = new Intent(this, JoinActivity.class);
+                startActivityForResult(intent, 0);
                 break;
         }
         setAllBtnEnabled(true);

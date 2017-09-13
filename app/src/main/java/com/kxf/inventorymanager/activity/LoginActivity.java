@@ -14,12 +14,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.reflect.TypeToken;
+import com.kxf.inventorymanager.AppConfig;
 import com.kxf.inventorymanager.BuildConfig;
 import com.kxf.inventorymanager.MyApplication;
 import com.kxf.inventorymanager.R;
 import com.kxf.inventorymanager.entity.User;
+import com.kxf.inventorymanager.http.HttpEntity;
+import com.kxf.inventorymanager.http.HttpUtils;
+import com.kxf.inventorymanager.utils.LogUtil;
 
 import org.xutils.ex.DbException;
+
+import java.lang.reflect.Type;
 
 public class LoginActivity extends BaseActivity implements OnClickListener {
 
@@ -55,7 +62,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 //		}
 //		Log.i(TAG, "isLogin()==false");
         return false;
-
     }
 
     private void init() {
@@ -182,6 +188,12 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                     btn_login.setEnabled(true);
                     btn_cancel.setEnabled(true);
                     break;
+                case 1005:
+                    String str = (String) msg.obj;
+                    showDialog(str);
+                    btn_login.setEnabled(true);
+                    btn_cancel.setEnabled(true);
+                    break;
                 default:
                     break;
             }
@@ -190,8 +202,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
     // 检查用户名和密码是否为空，和密码是否正确
     private void checkInput() {
-        String name = et_name.getText().toString().trim();
-        String pw = et_pw.getText().toString().trim();
+        final String name = et_name.getText().toString().trim();
+        final String pw = et_pw.getText().toString().trim();
         if ("".equals(et_name.getText().toString().trim())) {
             showDialog("请输入用户名");
             btn_login.setEnabled(true);
@@ -204,46 +216,55 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
             btn_cancel.setEnabled(true);
             return;
         }
-//        new Thread(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                // TODO Auto-generated method stub
-//                String result = null;
-//                result = query(et_name.getText().toString().trim(), et_pw
-//                        .getText().toString().trim());
-//                Log.i(TAG, "result=" + result);
-//                if (result != null) {
-//                    if (result.equals("0")) {
-//                        //登录失败,用户不存在
-//                        handler.sendEmptyMessage(1001);
-//                    } else if (result.equals("-1")) {
-//                        //登录失败,密码错误
-//                        handler.sendEmptyMessage(1002);
-//                    } else {
-//                        //登录成功
-//                        user = JsonUtil.jsonToUser(result);
-//                        Log.i(TAG, "user=" + user);
-//                        handler.sendEmptyMessage(1000);
-//                    }
-//                }
-//            }
-//        }).start();
-        try {
-            user = MyApplication.db().selector(User.class).where("name", "=", name).findFirst();
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
-        if (null == user){
-            //登录失败,用户不存在
-            handler.sendEmptyMessage(1001);
-        }else {
-            if (pw.equals(user.getPw())){
-                MyApplication.saveShare(KEY_USER_NAME, name);
-                handler.sendEmptyMessage(1000);
-            }else {
-                //登录失败,密码错误
-                handler.sendEmptyMessage(1002);
+
+        if (AppConfig.userCheckOnLine) {
+            final User u = new User();
+            u.setName(name);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    HttpEntity<User> he = new HttpEntity<User>();
+                    he.setRequestCode("1000");
+                    he.setTs(new User[]{u});
+                    String str = HttpUtils.sendMsg(HttpUtils.USER_URL, he);
+                    LogUtil.d("str=" + str);
+                    Type typeOfT = new TypeToken<HttpEntity<User>>(){}.getType();
+                    HttpEntity<User> heRe = HttpUtils.ParseJson(he, str, typeOfT);
+
+                    if ("0000".equals(heRe.getResponseCode())) {
+                        User[] us = heRe.getTs();
+                        LogUtil.d("us[0].getPw()=" + us[0].getPw());
+                        if (pw.equals(us[0].getPw())) {
+                            MyApplication.saveShare(KEY_USER_NAME, name);
+                            handler.sendEmptyMessage(1000);
+                            return;
+                        }
+                        //登录失败,密码错误
+                        handler.sendEmptyMessage(1002);
+                    }else {
+                        Message msg = handler.obtainMessage(1005);
+                        msg.obj = heRe.getResponseMsg();
+                        msg.sendToTarget();
+                    }
+                }
+            }).start();
+        } else {
+            try {
+                user = MyApplication.db().selector(User.class).where("name", "=", name).findFirst();
+            } catch (DbException e) {
+                e.printStackTrace();
+            }
+            if (null == user) {
+                //登录失败,用户不存在
+                handler.sendEmptyMessage(1001);
+            } else {
+                if (pw.equals(user.getPw())) {
+                    MyApplication.saveShare(KEY_USER_NAME, name);
+                    handler.sendEmptyMessage(1000);
+                } else {
+                    //登录失败,密码错误
+                    handler.sendEmptyMessage(1002);
+                }
             }
         }
     }

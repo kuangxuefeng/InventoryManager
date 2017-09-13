@@ -15,13 +15,18 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.gson.reflect.TypeToken;
+import com.kxf.inventorymanager.AppConfig;
 import com.kxf.inventorymanager.MyApplication;
 import com.kxf.inventorymanager.R;
 import com.kxf.inventorymanager.entity.User;
+import com.kxf.inventorymanager.http.HttpEntity;
+import com.kxf.inventorymanager.http.HttpUtils;
 import com.kxf.inventorymanager.utils.LogUtil;
 
 import org.xutils.ex.DbException;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,7 +115,10 @@ public class JoinActivity extends BaseActivity implements OnClickListener {
 						showDialogYes("注册失败，请重试！");
 					}
 					break;
-
+				case 1005:
+					String str = (String) msg.obj;
+					showDialogYes(str);
+					break;
 				default:
 					break;
 			}
@@ -125,17 +133,30 @@ public class JoinActivity extends BaseActivity implements OnClickListener {
 				break;
 			case R.id.btn_join_sure:
 				if (chickData()) {
-					new Thread(new Runnable() {
+					if (AppConfig.userCheckOnLine){
+						new Thread(new Runnable() {
 
-						@Override
-						public void run() {
-//							String requst = doQuery(user, "join");
-//							Log.i(TAG, "requst="+requst);
-//							Message message = handler.obtainMessage(1000);
-//							message.obj = requst;
-//							message.sendToTarget();
-						}
-					}).start();
+							@Override
+							public void run() {
+								HttpEntity<User> he = new HttpEntity<User>();
+								he.setRequestCode("1001");
+								he.setTs(new User[]{userNew});
+								String reStr = HttpUtils.sendMsg(HttpUtils.USER_URL, he);
+                                Type typeOfT = new TypeToken<HttpEntity<User>>(){}.getType();
+								HttpEntity<User> heRe = HttpUtils.ParseJson(he, reStr, typeOfT);
+								if ("0000".equals(heRe.getResponseCode())) {
+									Message msg = handler.obtainMessage(1000);
+									msg.obj = "1";
+									msg.sendToTarget();
+								}else {
+									Message msg = handler.obtainMessage(1005);
+									msg.obj = heRe.getResponseMsg();
+									msg.sendToTarget();
+								}
+							}
+						}).start();
+						return;
+					}
 				}
 				Toast.makeText(JoinActivity.this, "注册成功", Toast.LENGTH_LONG).show();
 				finish();
@@ -191,22 +212,26 @@ public class JoinActivity extends BaseActivity implements OnClickListener {
 		user.setAddress(address);
 		user.setInfo(info);
 		user.setPermissions(pos);
-		User u = null;
-		try {
-			u = MyApplication.db().selector(User.class).where("name", "=", name).findFirst();
-		} catch (DbException e) {
-			e.printStackTrace();
+
+		if (!AppConfig.userCheckOnLine){
+			User u = null;
+			try {
+				u = MyApplication.db().selector(User.class).where("name", "=", name).findFirst();
+			} catch (DbException e) {
+				e.printStackTrace();
+			}
+			if (null != u){
+				showDialogYes("用户名已存在");
+				et_join_name.setText(null);
+				return false;
+			}
+			try {
+				MyApplication.db().save(user);
+			} catch (DbException e) {
+				e.printStackTrace();
+			}
 		}
-		if (null != u){
-			showDialogYes("用户名已存在");
-			et_join_name.setText(null);
-			return false;
-		}
-		try {
-			MyApplication.db().save(user);
-		} catch (DbException e) {
-			e.printStackTrace();
-		}
+
 		userNew = user;
 		return true;
 	}
