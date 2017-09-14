@@ -13,13 +13,13 @@
 
     <TextView
         android:id="@+id/top_tv_right"
-        android:layout_width="55dp"
+        android:layout_width="50dp"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="5dp"
         android:gravity="center"
+        android:layout_marginRight="5dp"
         android:textColor="#FFFFFF" />
 
     <TextView

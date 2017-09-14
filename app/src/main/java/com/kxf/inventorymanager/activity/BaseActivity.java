@@ -6,7 +6,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -160,10 +162,30 @@ public class BaseActivity extends Activity {
         }
     }
 
-    protected void setRightInfo(String text, View.OnClickListener listener){
+    protected void setRightInfo(final String text, View.OnClickListener listener){
         if (null != top_tv_right){
             top_tv_right.setText(text);
             top_tv_right.setOnClickListener(listener);
+            top_tv_right.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                    float vWidth = v.getWidth();
+                    LogUtil.d("vWidth=" + vWidth);
+                    TextPaint paint = top_tv_right.getPaint();
+                    float textLen = paint.measureText(text);
+                    paint.mb
+                    LogUtil.d("textLen=" + textLen);
+                    float oldSize = top_tv_right.getTextSize();
+                    LogUtil.d("oldSize=" + oldSize);
+                    if (textLen > vWidth){
+                        float size = vWidth * oldSize / textLen;
+                        LogUtil.d("size=" + size);
+                        float sizeDP = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, size, getResources().getDisplayMetrics());
+                        LogUtil.d("sizeDP=" + sizeDP);
+                        top_tv_right.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+                    }
+                }
+            });
         }
     }
 
