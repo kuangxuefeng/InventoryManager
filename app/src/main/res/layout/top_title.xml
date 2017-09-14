@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="#00B7EE">
+
+    <ImageView
+        android:id="@+id/top_iv_left_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
+        android:src="@drawable/icon_fanhui" />
+
+    <TextView
+        android:id="@+id/top_tv_right"
+        android:layout_width="55dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="5dp"
+        android:gravity="center"
+        android:textColor="#FFFFFF" />
+
+    <TextView
+        android:id="@+id/top_tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/top_tv_right"
+        android:layout_toRightOf="@+id/top_iv_left_icon"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="27sp" />
+</RelativeLayout>

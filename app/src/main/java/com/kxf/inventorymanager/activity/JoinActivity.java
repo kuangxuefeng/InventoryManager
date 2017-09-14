@@ -1,7 +1,5 @@
 package com.kxf.inventorymanager.activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -52,6 +50,7 @@ public class JoinActivity extends BaseActivity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_join);
+		setTopTitle("注册");
 		init();
 	}
 
@@ -288,23 +287,4 @@ public class JoinActivity extends BaseActivity implements OnClickListener {
 //		}
 //		return Result_Show;
 //	}
-
-	/**
-	 *
-	 * @Title: showDialogYes
-	 * @Description: TODO(显示用户只能确定的Dialog)
-	 * @param @param msg 设定文件
-	 * @return void 返回类型
-	 * @throws
-	 */
-	private void showDialogYes(String msg) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(msg).setCancelable(false)
-				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-					}
-				});
-		AlertDialog alert = builder.create();
-		alert.show();
-	}
 }

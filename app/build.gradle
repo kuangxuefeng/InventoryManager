@@ -20,12 +20,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
-        debug{
+        debug {
             buildConfigField "boolean", "isOpenLog", "true"
         }
     }
 }
-String getDateTime(){
+
+String getDateTime() {
     String time = "";
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     time = sdf.format(new Date());
@@ -34,7 +35,8 @@ String getDateTime(){
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
     compile files('libs/xutils-3.3.22.jar')
     compile files('libs/gson-2.1.jar')
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
 }

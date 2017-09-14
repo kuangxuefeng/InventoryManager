@@ -3,11 +3,13 @@ package com.kxf.inventorymanager.activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.karics.library.zxing.android.CaptureActivity;
+import com.kxf.inventorymanager.MyApplication;
 import com.kxf.inventorymanager.R;
 
 /**
@@ -16,6 +18,18 @@ import com.kxf.inventorymanager.R;
 public class MainMenuActivity extends BaseActivity implements View.OnClickListener {
     private Button btn_in, btn_out, btn_query, btn_ver, btn_user;
     private static final int REQUEST_CODE_SCAN = 1000;
+    private Runnable backRun = new Runnable() {
+        @Override
+        public void run() {
+            showDialog("是否退出？", "否", null, "是", new Runnable() {
+                @Override
+                public void run() {
+                    MyApplication.saveShare(LoginActivity.KEY_USER_ISLOGIN, "");
+                    finish();
+                }
+            });
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,6 +39,14 @@ public class MainMenuActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void init() {
+        setTopTitle("欢迎使用本系统");
+//        setLeftClick(backRun);
+        setRightInfo("退出登录", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                backRun.run();
+            }
+        });
         btn_in = (Button) findViewById(R.id.btn_in);
         btn_out = (Button) findViewById(R.id.btn_out);
         btn_query = (Button) findViewById(R.id.btn_query);
@@ -85,5 +107,15 @@ public class MainMenuActivity extends BaseActivity implements View.OnClickListen
         btn_query.setEnabled(enabled);
         btn_ver.setEnabled(enabled);
         btn_user.setEnabled(enabled);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_BACK
+//                && event.getRepeatCount() == 0) {
+//            backRun.run();
+//            return true;
+//        }
+        return super.onKeyDown(keyCode, event);
     }
 }

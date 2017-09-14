@@ -1,7 +1,5 @@
 package com.kxf.inventorymanager.activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.kxf.inventorymanager.AppConfig;
 import com.kxf.inventorymanager.BuildConfig;
@@ -31,8 +30,8 @@ import java.lang.reflect.Type;
 public class LoginActivity extends BaseActivity implements OnClickListener {
 
     private String TAG = "LoginActivity";
-    public static final String KEY_USER_NAME = "key_user_name";
-    public static final String KEY_USER_PW = "key_user_pw";
+    public static final String KEY_USER = "key_user";
+    public static final String KEY_USER_ISLOGIN = "key_user_islogin";
     private EditText et_name = null;
     private EditText et_pw = null;
     private Button btn_login = null;
@@ -45,22 +44,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         if (isLogin()) {
             //启动主界面
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
+            handler.sendEmptyMessage(1006);
         }
         setContentView(R.layout.activity_login);
         init();
     }
 
     private boolean isLogin() {
-//		Log.i(TAG, "isLogin()");
-//		AppConfig ac = (AppConfig) SharedPreferencesUtil.getObject(this, SharedPreferencesUtil.SHARE_PRE_APP_CONFIG);
-//		if (ac!=null) {
-//			Log.i(TAG, "isLogin()=="+ac.isLogin());
-//			return ac.isLogin();
-//		}
-//		Log.i(TAG, "isLogin()==false");
+        String log = MyApplication.getShare(KEY_USER_ISLOGIN);
+        if ("1".equals(log)){
+            return true;
+        }
         return false;
     }
 
@@ -147,25 +141,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
             Log.i(TAG, "msg.what=" + msg.what);
             switch (msg.what) {
                 case 1000:
+                    Gson gson = new Gson();
+                    MyApplication.saveShare(KEY_USER, gson.toJson(user));
+                    MyApplication.saveShare(KEY_USER_ISLOGIN, "1");
                     Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-//                    // 共享信息
-//                    Log.i(TAG, "user=" + user);
-//                    SharedPreferencesUtil.saveObject(user, getApplicationContext(), SharedPreferencesUtil.SHARE_PRE_USER_NAME);
-//                    AppConfig ac = new AppConfig();
-//                    ac.setLogin(true);
-//                    Log.i(TAG, "AppConfig=" + ac);
-//                    SharedPreferencesUtil.saveObject(ac, getApplicationContext(), SharedPreferencesUtil.SHARE_PRE_APP_CONFIG);
-//                    Log.i(TAG, "共享信息保存成功！");
-                    //启动主界面
-                    Intent intent = new Intent(LoginActivity.this, MainMenuActivity.class);
-                    startActivity(intent);
                     btn_login.setEnabled(true);
                     btn_cancel.setEnabled(true);
-                    LoginActivity.this.finish();
+                    handler.sendEmptyMessage(1006);
                     break;
                 case 1001:
                     Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
-                    showDialog("用户不存在！");
+                    showDialogYes("用户不存在！");
                     et_name.setText(null);
                     et_pw.setText(null);
                     btn_login.setEnabled(true);
@@ -173,26 +159,32 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                     break;
                 case 1002:
                     Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
-                    showDialog("密码错误！");
+                    showDialogYes("密码错误！");
                     et_pw.setText(null);
                     btn_login.setEnabled(true);
                     btn_cancel.setEnabled(true);
                     break;
                 case 1003:
-                    showDialog("网络连接异常，请检查网络！");
+                    showDialogYes("网络连接异常，请检查网络！");
                     btn_login.setEnabled(true);
                     btn_cancel.setEnabled(true);
                     break;
                 case 1004:
-                    showDialog("网络传输异常，请重试！");
+                    showDialogYes("网络传输异常，请重试！");
                     btn_login.setEnabled(true);
                     btn_cancel.setEnabled(true);
                     break;
                 case 1005:
                     String str = (String) msg.obj;
-                    showDialog(str);
+                    showDialogYes(str);
                     btn_login.setEnabled(true);
                     btn_cancel.setEnabled(true);
+                    break;
+                case 1006:
+                    //启动主界面
+                    Intent intent = new Intent(LoginActivity.this, MainMenuActivity.class);
+                    startActivity(intent);
+                    LoginActivity.this.finish();
                     break;
                 default:
                     break;
@@ -205,13 +197,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         final String name = et_name.getText().toString().trim();
         final String pw = et_pw.getText().toString().trim();
         if ("".equals(et_name.getText().toString().trim())) {
-            showDialog("请输入用户名");
+            showDialogYes("请输入用户名");
             btn_login.setEnabled(true);
             btn_cancel.setEnabled(true);
             return;
         }
         if ("".equals(et_pw.getText().toString().trim())) {
-            showDialog("请输入密码");
+            showDialogYes("请输入密码");
             btn_login.setEnabled(true);
             btn_cancel.setEnabled(true);
             return;
@@ -235,7 +227,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                         User[] us = heRe.getTs();
                         LogUtil.d("us[0].getPw()=" + us[0].getPw());
                         if (pw.equals(us[0].getPw())) {
-                            MyApplication.saveShare(KEY_USER_NAME, name);
+                            user = us[0];
                             handler.sendEmptyMessage(1000);
                             return;
                         }
@@ -259,7 +251,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                 handler.sendEmptyMessage(1001);
             } else {
                 if (pw.equals(user.getPw())) {
-                    MyApplication.saveShare(KEY_USER_NAME, name);
                     handler.sendEmptyMessage(1000);
                 } else {
                     //登录失败,密码错误
@@ -268,35 +259,4 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
             }
         }
     }
-
-    private void showDialog(String msg) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(msg).setCancelable(false)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-//	// 根据用户名称密码查询
-//	private String query(String account, String password) {
-//		// 查询参数
-//		String queryString = "name=" + account + "&password=" + password;
-//		// url
-//		String url = HttpUtil.BASE_URL + "servlet/LoginServlet?" + queryString;
-//		Log.i(TAG, "url=" + url);
-//		// 查询返回结果
-//		try {
-//			return HttpUtil.queryStringForPost(url);
-//		} catch (ClientProtocolException e) {
-//			handler.sendEmptyMessage(1003);
-//		} catch (IOException e) {
-//			handler.sendEmptyMessage(1004);
-//		}
-//		return null;
-//	}
-
-
 }

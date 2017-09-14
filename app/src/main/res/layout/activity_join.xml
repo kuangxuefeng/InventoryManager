@@ -3,17 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.JoinActivity" >
-
-    <TextView
-        android:id="@+id/tv_join"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:text="注册"
-        android:textSize="30sp" />
-
+    <include layout="@layout/top_title"
+        android:id="@+id/tv_join"/>
     <LinearLayout
         android:id="@+id/ll_join_name"
         android:layout_width="wrap_content"
