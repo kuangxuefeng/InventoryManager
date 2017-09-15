@@ -43,8 +43,9 @@
         <activity
             android:name="com.karics.library.zxing.android.CaptureActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar"></activity>
-        <activity android:name=".activity.UserMenuActivity"></activity>
+            android:theme="@android:style/Theme.NoTitleBar" />
+        <activity android:name=".activity.UserMenuActivity" />
+        <activity android:name=".activity.BaseMenuActivity"></activity>
     </application>
 
 </manifest>
