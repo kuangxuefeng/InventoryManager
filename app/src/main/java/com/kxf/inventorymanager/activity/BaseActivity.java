@@ -33,6 +33,8 @@ public class BaseActivity extends Activity {
     protected ImageView top_iv_left_icon;
     protected TextView top_tv_title, top_tv_right;
 
+    private boolean isNeedAdapta = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -173,15 +175,13 @@ public class BaseActivity extends Activity {
                     LogUtil.d("vWidth=" + vWidth);
                     TextPaint paint = top_tv_right.getPaint();
                     float textLen = paint.measureText(text);
-                    paint.mb
                     LogUtil.d("textLen=" + textLen);
                     float oldSize = top_tv_right.getTextSize();
                     LogUtil.d("oldSize=" + oldSize);
-                    if (textLen > vWidth){
+                    if (textLen != vWidth && isNeedAdapta){
+                        isNeedAdapta = false;
                         float size = vWidth * oldSize / textLen;
                         LogUtil.d("size=" + size);
-                        float sizeDP = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, size, getResources().getDisplayMetrics());
-                        LogUtil.d("sizeDP=" + sizeDP);
                         top_tv_right.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
                     }
                 }
