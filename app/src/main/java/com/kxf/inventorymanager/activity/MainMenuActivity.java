@@ -2,22 +2,22 @@ package com.kxf.inventorymanager.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.karics.library.zxing.android.CaptureActivity;
 import com.kxf.inventorymanager.MyApplication;
-import com.kxf.inventorymanager.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by kxf on 2017/9/2.
  */
-public class MainMenuActivity extends BaseActivity implements View.OnClickListener {
-    private Button btn_in, btn_out, btn_query, btn_ver, btn_user;
+public class MainMenuActivity extends BaseMenuActivity implements BaseMenuActivity.OnItemClickListener {
     private static final int REQUEST_CODE_SCAN = 1000;
+    private List<String> itemTitles;
     private Runnable backRun = new Runnable() {
         @Override
         public void run() {
@@ -31,62 +31,13 @@ public class MainMenuActivity extends BaseActivity implements View.OnClickListen
         }
     };
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_menu);
-        init();
-    }
+//    @Override
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_main_menu);
+//        init();
+//    }
 
-    private void init() {
-        setTopTitle("欢迎使用本系统");
-//        setLeftClick(backRun);
-        setRightInfo("退出登录", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                backRun.run();
-            }
-        });
-        btn_in = (Button) findViewById(R.id.btn_in);
-        btn_out = (Button) findViewById(R.id.btn_out);
-        btn_query = (Button) findViewById(R.id.btn_query);
-        btn_ver = (Button) findViewById(R.id.btn_ver);
-        btn_user = (Button) findViewById(R.id.btn_user);
-
-        btn_in.setOnClickListener(this);
-        btn_out.setOnClickListener(this);
-        btn_query.setOnClickListener(this);
-        btn_ver.setOnClickListener(this);
-        btn_user.setOnClickListener(this);
-
-        if (null != user && user.getPermissions() > 0){
-            btn_user.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        setAllBtnEnabled(false);
-        Intent intent;
-        switch (v.getId()){
-            case R.id.btn_in:
-                intent = new Intent(this,
-                        CaptureActivity.class);
-                startActivityForResult(intent, REQUEST_CODE_SCAN);
-                break;
-            case R.id.btn_out:
-                break;
-            case R.id.btn_query:
-                break;
-            case R.id.btn_ver:
-                break;
-            case R.id.btn_user:
-                intent = new Intent(this, JoinActivity.class);
-                startActivityForResult(intent, 0);
-                break;
-        }
-        setAllBtnEnabled(true);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -101,14 +52,6 @@ public class MainMenuActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    private void setAllBtnEnabled(boolean enabled){
-        btn_in.setEnabled(enabled);
-        btn_out.setEnabled(enabled);
-        btn_query.setEnabled(enabled);
-        btn_ver.setEnabled(enabled);
-        btn_user.setEnabled(enabled);
-    }
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 //        if (keyCode == KeyEvent.KEYCODE_BACK
@@ -117,5 +60,60 @@ public class MainMenuActivity extends BaseActivity implements View.OnClickListen
 //            return true;
 //        }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected List<BaseItem> getBaseItem() {
+        itemTitles = new ArrayList();
+        itemTitles.add("入库");
+        itemTitles.add("出库");
+        itemTitles.add("查询");
+        itemTitles.add("版本");
+        if (null != user && user.getPermissions() > 0){
+            itemTitles.add("用户管理");
+        }
+        List<BaseItem> ls = new ArrayList<>();
+        for (String title : itemTitles){
+            BaseItem bi = new BaseItem().setId(itemTitles.indexOf(title)).setTitle(title).setListener(this);
+            ls.add(bi);
+        }
+        return ls;
+    }
+
+    @Override
+    protected String getMenuTitle() {
+        return "欢迎使用本系统";
+    }
+
+    @Override
+    protected void afterInitMenu() {
+        setRightInfo("退出登录", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                backRun.run();
+            }
+        });
+    }
+
+    @Override
+    public void onClick(View v, BaseItem bi) {
+        Intent intent;
+        switch (bi.getId()){
+            case 0:
+                intent = new Intent(this,
+                        CaptureActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_SCAN);
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                intent = new Intent(this, UserMenuActivity.class);
+                startActivityForResult(intent, 0);
+                break;
+        }
     }
 }

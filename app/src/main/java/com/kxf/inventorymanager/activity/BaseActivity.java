@@ -164,28 +164,11 @@ public class BaseActivity extends Activity {
         }
     }
 
-    protected void setRightInfo(final String text, View.OnClickListener listener){
+    protected void setRightInfo(String text, View.OnClickListener listener){
         if (null != top_tv_right){
             top_tv_right.setText(text);
             top_tv_right.setOnClickListener(listener);
-            top_tv_right.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                @Override
-                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                    float vWidth = v.getWidth();
-                    LogUtil.d("vWidth=" + vWidth);
-                    TextPaint paint = top_tv_right.getPaint();
-                    float textLen = paint.measureText(text);
-                    LogUtil.d("textLen=" + textLen);
-                    float oldSize = top_tv_right.getTextSize();
-                    LogUtil.d("oldSize=" + oldSize);
-                    if (textLen != vWidth && isNeedAdapta){
-                        isNeedAdapta = false;
-                        float size = vWidth * oldSize / textLen;
-                        LogUtil.d("size=" + size);
-                        top_tv_right.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-                    }
-                }
-            });
+            autoMatchFont(top_tv_right);
         }
     }
 
@@ -193,5 +176,27 @@ public class BaseActivity extends Activity {
         if (null != top_tv_title){
             top_tv_title.setText(text);
         }
+    }
+
+    protected void autoMatchFont(final TextView view){
+        view.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                float vWidth = v.getWidth();
+                LogUtil.d("vWidth=" + vWidth);
+                TextPaint paint = view.getPaint();
+                String text = view.getText().toString();
+                float textLen = paint.measureText(text);
+                LogUtil.d("textLen=" + textLen);
+                float oldSize = view.getTextSize();
+                LogUtil.d("oldSize=" + oldSize);
+                if (textLen != vWidth && isNeedAdapta){
+                    isNeedAdapta = false;
+                    float size = vWidth * oldSize / textLen;
+                    LogUtil.d("size=" + size);
+                    view.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+                }
+            }
+        });
     }
 }
