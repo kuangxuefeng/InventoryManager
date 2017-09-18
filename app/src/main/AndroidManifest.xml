@@ -45,7 +45,9 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity android:name=".activity.UserMenuActivity" />
-        <activity android:name=".activity.BaseMenuActivity"></activity>
+        <activity android:name=".activity.BaseMenuActivity" />
+        <activity android:name=".activity.BaseListActivity" />
+        <activity android:name=".activity.UserListActivity"></activity>
     </application>
 
 </manifest>

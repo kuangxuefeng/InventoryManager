@@ -20,7 +20,7 @@ public class UserMenuActivity extends BaseMenuActivity implements BaseMenuActivi
         itemTitles = new ArrayList<>();
         itemTitles.add("用户添加");
         itemTitles.add("用户查询");
-        itemTitles.add("用户信息修改");
+        itemTitles.add("信息修改");
         List<BaseItem> bis = new ArrayList<>();
         for (String title : itemTitles){
             BaseItem bi = new BaseItem().setId(itemTitles.indexOf(title)).setTitle(title).setListener(this);
