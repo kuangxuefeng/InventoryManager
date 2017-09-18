@@ -38,7 +38,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.JoinActivity" />
+        <activity android:name=".activity.UserJoinActivity" />
         <activity android:name=".activity.MainMenuActivity" />
         <activity
             android:name="com.karics.library.zxing.android.CaptureActivity"

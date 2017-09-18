@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
-import com.kxf.inventorymanager.activity.JoinActivity;
+import com.kxf.inventorymanager.activity.UserJoinActivity;
 import com.kxf.inventorymanager.entity.User;
 import com.kxf.inventorymanager.utils.LogUtil;
 
@@ -35,11 +35,11 @@ public class MyApplication extends Application {
 
     private void initData() {
         try {
-            User u = MyApplication.db().selector(User.class).where("name", "=", JoinActivity.DEFAULT_ROOT_NAME).findFirst();
+            User u = MyApplication.db().selector(User.class).where("name", "=", UserJoinActivity.DEFAULT_ROOT_NAME).findFirst();
             if (null == u){
                 u = new User();
-                u.setName(JoinActivity.DEFAULT_ROOT_NAME);
-                u.setPw(JoinActivity.DEFAULT_ROOT_PW);
+                u.setName(UserJoinActivity.DEFAULT_ROOT_NAME);
+                u.setPw(UserJoinActivity.DEFAULT_ROOT_PW);
                 u.setPermissions(2);
                 MyApplication.db().save(u);
             }

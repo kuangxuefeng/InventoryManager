@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -28,8 +27,6 @@ import org.xutils.ex.DbException;
 import java.lang.reflect.Type;
 
 public class LoginActivity extends BaseActivity implements OnClickListener {
-
-    private String TAG = "LoginActivity";
     public static final String KEY_USER = "key_user";
     public static final String KEY_USER_ISLOGIN = "key_user_islogin";
     private EditText et_name = null;
@@ -107,7 +104,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                 btn_cancel.setEnabled(false);
                 btn_join.setEnabled(false);
 
-                Intent intent = new Intent(LoginActivity.this, JoinActivity.class);
+                Intent intent = new Intent(LoginActivity.this, UserJoinActivity.class);
                 startActivityForResult(intent, 0);
                 break;
             default:
@@ -121,13 +118,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.i(TAG, "onActivityResult()......");
+        LogUtil.d("onActivityResult()......");
         btn_login.setEnabled(true);
         btn_cancel.setEnabled(true);
         btn_join.setEnabled(true);
-        Log.i(TAG, "requestCode=" + requestCode + "  resultCode=" + resultCode + "  data=" + data);
+        LogUtil.d("requestCode=" + requestCode + "  resultCode=" + resultCode + "  data=" + data);
         if (data != null && requestCode == 0) {
-            Log.i(TAG, "data!=null&&resultCode==RESULT_OK");
+            LogUtil.d("data!=null&&resultCode==RESULT_OK");
             et_name.setText(data.getStringExtra("name"));
             et_pw.setText(data.getStringExtra("pw"));
         }
@@ -138,7 +135,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Log.i(TAG, "msg.what=" + msg.what);
+            LogUtil.d("msg.what=" + msg.what);
             switch (msg.what) {
                 case 1000:
                     Gson gson = new Gson();

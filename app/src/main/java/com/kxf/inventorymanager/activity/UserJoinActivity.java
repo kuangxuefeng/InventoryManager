@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -28,9 +27,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JoinActivity extends BaseActivity implements OnClickListener {
+public class UserJoinActivity extends BaseActivity implements OnClickListener {
 
-	private static final String TAG = "JoinActivity";
 	public static final String DEFAULT_ROOT_NAME = "root";
 	public static final String DEFAULT_ROOT_PW = "qazwsx";
 	private Button btn_join_exit = null;
@@ -96,9 +94,9 @@ public class JoinActivity extends BaseActivity implements OnClickListener {
 					if (msg.obj.toString()!=null) {
 						requst= Long.parseLong(msg.obj.toString());
 					}
-					Log.i(TAG, "requst=" + requst);
+					LogUtil.d("requst=" + requst);
 					if (requst > 0) {
-						Toast.makeText(JoinActivity.this, "注册成功", Toast.LENGTH_LONG).show();
+						Toast.makeText(UserJoinActivity.this, "注册成功", Toast.LENGTH_LONG).show();
 						//添加给第一个Activity的返回值，并设置resultCode
 						Intent intent = new Intent();
 						intent.putExtra("name", userNew.getName());
@@ -157,7 +155,7 @@ public class JoinActivity extends BaseActivity implements OnClickListener {
 						return;
 					}
 				}
-				Toast.makeText(JoinActivity.this, "注册成功", Toast.LENGTH_LONG).show();
+				Toast.makeText(UserJoinActivity.this, "注册成功", Toast.LENGTH_LONG).show();
 				finish();
 				break;
 

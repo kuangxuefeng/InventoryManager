@@ -8,15 +8,22 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.kxf.inventorymanager.R;
+import com.kxf.inventorymanager.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.kxf.inventorymanager.activity.BaseMenuActivity.MENU_TYPE.DOUBLE_LINE;
 
 public abstract class BaseMenuActivity extends BaseActivity {
 
     private List<BaseItem> baseItems;
     private List<Button> btnItems;
     private boolean hasExtra = true;
+    protected MENU_TYPE menuType = DOUBLE_LINE;
+    public enum MENU_TYPE{
+        SINGLE_LINE, DOUBLE_LINE
+    }
 
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
@@ -37,17 +44,26 @@ public abstract class BaseMenuActivity extends BaseActivity {
             return;
         }
 
-        if (baseItems.size()%2==0){
-            hasExtra = false;
-        }
-        int numLlItem = baseItems.size() / 2;
         btnItems = new ArrayList<>();
-        for (int i=0;i<numLlItem;i++){
-            addItem(ll_content, baseItems.get(2*i), baseItems.get(2*i+1));
-        }
+        switch (menuType){
+            case SINGLE_LINE:
+                for (BaseItem bi : baseItems){
+                    addItem(ll_content, bi, null);
+                }
+                break;
+            case DOUBLE_LINE:
+                if (baseItems.size()%2==0){
+                    hasExtra = false;
+                }
+                int numLlItem = baseItems.size() / 2;
+                for (int i=0;i<numLlItem;i++){
+                    addItem(ll_content, baseItems.get(2*i), baseItems.get(2*i+1));
+                }
 
-        if (hasExtra){
-            addItem(ll_content, baseItems.get(baseItems.size()-1), null);
+                if (hasExtra){
+                    addItem(ll_content, baseItems.get(baseItems.size()-1), null);
+                }
+                break;
         }
     }
 
@@ -98,6 +114,7 @@ public abstract class BaseMenuActivity extends BaseActivity {
             View.OnClickListener viewListener = new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
+                    LogUtil.d("onClick title=" + title);
                     if (null != listener){
                         mActivity.runOnUiThread(new Runnable() {
                             @Override
