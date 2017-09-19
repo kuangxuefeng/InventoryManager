@@ -3,11 +3,13 @@ package com.kxf.inventorymanager.activity;
 import android.os.Bundle;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.kxf.inventorymanager.R;
 
 public abstract class BaseListActivity extends BaseActivity {
     protected ListView lv_base;
+    protected ProgressBar load_pb;
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,7 +21,11 @@ public abstract class BaseListActivity extends BaseActivity {
 
     protected void initListView() {
         lv_base = (ListView) findViewById(R.id.lv_base);
-        lv_base.setAdapter(getAdapter());
+        load_pb = (ProgressBar) findViewById(R.id.load_pb);
+        ListAdapter adapter = getAdapter();
+        if (null != adapter){
+            lv_base.setAdapter(getAdapter());
+        }
     }
 
     protected abstract String getListTitle();

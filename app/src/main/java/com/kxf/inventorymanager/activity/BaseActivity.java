@@ -6,6 +6,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -22,6 +24,8 @@ import com.kxf.inventorymanager.entity.User;
 import com.kxf.inventorymanager.utils.FormatUtils;
 import com.kxf.inventorymanager.utils.LogUtil;
 
+import static com.kxf.inventorymanager.activity.LoginActivity.KEY_USER;
+
 public class BaseActivity extends Activity {
 
     private String tag = "";
@@ -34,6 +38,21 @@ public class BaseActivity extends Activity {
     protected TextView top_tv_title, top_tv_right;
 
     private boolean isNeedAdapta = true;
+    public static final int msg_base_http_erro = 2000;
+    protected final Handler handlerBase = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            LogUtil.d("msg.what=" + msg.what);
+            switch (msg.what) {
+                case msg_base_http_erro:
+                    String str = (String) msg.obj;
+                    showDialogYes(str);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +63,7 @@ public class BaseActivity extends Activity {
         tag = this.getPackageName() + "." + this.getLocalClassName();
         tag = "do in " + tag + AppConfig.BASE_ACTIVITY_LOG_INFO_STRING;
         LogUtil.e(tag);
-        String userStr = MyApplication.getShare(LoginActivity.KEY_USER);
+        String userStr = MyApplication.getShare(KEY_USER);
         Gson gson = new Gson();
         user = gson.fromJson(userStr, User.class);
     }

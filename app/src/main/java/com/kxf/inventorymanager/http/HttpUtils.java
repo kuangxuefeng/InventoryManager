@@ -21,6 +21,7 @@ import java.net.URL;
 public class HttpUtils {
     public static final String BASE_URL = "http://116.196.95.211:8080/InventoryManagerServer/servlet/";
     public static final String USER_URL = "UserServlet";
+    public static final String COMMODITY_URL = "CommodityServlet";
     public static String sendMsg(String urlItem, HttpEntity he) {
         try {
             return sendMsgEx(urlItem, he);
@@ -72,9 +73,13 @@ public class HttpUtils {
             while ((responseStr = reader.readLine()) != null) {
                 sb.append(responseStr);
             }
-            LogUtil.d("sb=" + sb);
             in.close();
+        }else {
+            he.setResponseCode(code + "");
+            he.setResponseMsg("通讯失败 code=" + code);
+            sb.append(gson.toJson(he));
         }
+        LogUtil.d("sb=" + sb);
         con.disconnect();
         return sb.toString();
     }

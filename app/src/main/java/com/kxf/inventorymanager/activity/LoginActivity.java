@@ -104,7 +104,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                 btn_cancel.setEnabled(false);
                 btn_join.setEnabled(false);
 
-                Intent intent = new Intent(LoginActivity.this, UserJoinActivity.class);
+                Intent intent = new Intent(LoginActivity.this, UserModifyActivity.class);
                 startActivityForResult(intent, 0);
                 break;
             default:
@@ -130,9 +130,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         }
     }
 
-    ;
 
-    Handler handler = new Handler() {
+    protected Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             LogUtil.d("msg.what=" + msg.what);
@@ -142,8 +141,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                     MyApplication.saveShare(KEY_USER, gson.toJson(user));
                     MyApplication.saveShare(KEY_USER_ISLOGIN, "1");
                     Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                    btn_login.setEnabled(true);
-                    btn_cancel.setEnabled(true);
                     handler.sendEmptyMessage(1006);
                     break;
                 case 1001:
@@ -151,41 +148,33 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                     showDialogYes("用户不存在！");
                     et_name.setText(null);
                     et_pw.setText(null);
-                    btn_login.setEnabled(true);
-                    btn_cancel.setEnabled(true);
                     break;
                 case 1002:
                     Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
                     showDialogYes("密码错误！");
                     et_pw.setText(null);
-                    btn_login.setEnabled(true);
-                    btn_cancel.setEnabled(true);
                     break;
                 case 1003:
                     showDialogYes("网络连接异常，请检查网络！");
-                    btn_login.setEnabled(true);
-                    btn_cancel.setEnabled(true);
                     break;
                 case 1004:
                     showDialogYes("网络传输异常，请重试！");
-                    btn_login.setEnabled(true);
-                    btn_cancel.setEnabled(true);
                     break;
                 case 1005:
                     String str = (String) msg.obj;
                     showDialogYes(str);
-                    btn_login.setEnabled(true);
-                    btn_cancel.setEnabled(true);
                     break;
                 case 1006:
                     //启动主界面
                     Intent intent = new Intent(LoginActivity.this, MainMenuActivity.class);
                     startActivity(intent);
                     LoginActivity.this.finish();
-                    break;
+                    return;
                 default:
                     break;
             }
+            btn_login.setEnabled(true);
+            btn_cancel.setEnabled(true);
         }
     };
 
@@ -231,7 +220,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                         //登录失败,密码错误
                         handler.sendEmptyMessage(1002);
                     }else {
-                        Message msg = handler.obtainMessage(1005);
+                        Message msg = handlerBase.obtainMessage(1005);
                         msg.obj = heRe.getResponseMsg();
                         msg.sendToTarget();
                     }

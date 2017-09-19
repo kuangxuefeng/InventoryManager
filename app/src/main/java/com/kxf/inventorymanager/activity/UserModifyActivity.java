@@ -27,7 +27,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserJoinActivity extends BaseActivity implements OnClickListener {
+public class UserModifyActivity extends BaseActivity implements OnClickListener {
 
 	public static final String DEFAULT_ROOT_NAME = "root";
 	public static final String DEFAULT_ROOT_PW = "qazwsx";
@@ -43,6 +43,7 @@ public class UserJoinActivity extends BaseActivity implements OnClickListener {
 	private List<String> data_list;
 	private ArrayAdapter<String> arr_adapter;
 	private User userNew;
+	private User userOld;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +97,7 @@ public class UserJoinActivity extends BaseActivity implements OnClickListener {
 					}
 					LogUtil.d("requst=" + requst);
 					if (requst > 0) {
-						Toast.makeText(UserJoinActivity.this, "注册成功", Toast.LENGTH_LONG).show();
+						Toast.makeText(UserModifyActivity.this, "注册成功", Toast.LENGTH_LONG).show();
 						//添加给第一个Activity的返回值，并设置resultCode
 						Intent intent = new Intent();
 						intent.putExtra("name", userNew.getName());
@@ -155,7 +156,7 @@ public class UserJoinActivity extends BaseActivity implements OnClickListener {
 						return;
 					}
 				}
-				Toast.makeText(UserJoinActivity.this, "注册成功", Toast.LENGTH_LONG).show();
+				Toast.makeText(UserModifyActivity.this, "注册成功", Toast.LENGTH_LONG).show();
 				finish();
 				break;
 
