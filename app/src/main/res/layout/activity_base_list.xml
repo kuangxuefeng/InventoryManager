@@ -10,11 +10,19 @@
     <include layout="@layout/top_title"
         android:id="@+id/list_top_title" />
 
+    <LinearLayout
+        android:id="@+id/ll_lv_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:layout_below="@+id/list_top_title">
+    </LinearLayout>
     <ListView
         android:id="@+id/lv_base"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/list_top_title"></ListView>
+        android:layout_below="@+id/ll_lv_title"></ListView>
     <ProgressBar
         android:id="@+id/load_pb"
         android:visibility="gone"

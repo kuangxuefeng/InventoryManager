@@ -2,13 +2,23 @@ package com.kxf.inventorymanager.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.gson.reflect.TypeToken;
 import com.karics.library.zxing.android.CaptureActivity;
 import com.kxf.inventorymanager.MyApplication;
+import com.kxf.inventorymanager.entity.Commodity;
+import com.kxf.inventorymanager.entity.User;
+import com.kxf.inventorymanager.http.HttpEntity;
+import com.kxf.inventorymanager.http.HttpUtils;
+import com.kxf.inventorymanager.utils.FormatUtils;
+import com.kxf.inventorymanager.utils.LogUtil;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +41,20 @@ public class MainMenuActivity extends BaseMenuActivity implements BaseMenuActivi
         }
     };
 
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            LogUtil.d("msg=" + msg);
+            switch (msg.what){
+                case 1010:
+                    String content = (String) msg.obj;
+                    Toast.makeText(mContext, content + " 入库成功！", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
+
 //    @Override
 //    public void onCreate(Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);
@@ -48,8 +72,39 @@ public class MainMenuActivity extends BaseMenuActivity implements BaseMenuActivi
                 String content = data.getStringExtra(CaptureActivity.DECODED_CONTENT_KEY);
                 Bitmap bitmap = data.getParcelableExtra(CaptureActivity.DECODED_BITMAP_KEY);
                 Toast.makeText(this, content, Toast.LENGTH_SHORT).show();
+
+                doUploadNet(content);
             }
         }
+    }
+
+    private void doUploadNet(final String content){
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                HttpEntity<Commodity> he = new HttpEntity<Commodity>();
+                he.setRequestCode("1001");
+                Commodity com = new Commodity();
+                com.setUserId(user.getId());
+                com.setQcode(content);
+                com.setHmsS(FormatUtils.getTimeByFormat(FormatUtils.FORMAT_COMMODITY_HMSS));
+                com.setYmd(FormatUtils.getTimeByFormat(FormatUtils.FORMAT_COMMODITY_YMD));
+                he.setTs(new Commodity[]{com});
+                String reStr = HttpUtils.sendMsg(HttpUtils.COMMODITY_URL, he);
+                Type typeOfT = new TypeToken<HttpEntity<User>>(){}.getType();
+                HttpEntity<Commodity> heRe = HttpUtils.ParseJson(he, reStr, typeOfT);
+                if ("0000".equals(heRe.getResponseCode())) {
+                    Message msg = handler.obtainMessage(1010);
+                    msg.obj = content;
+                    msg.sendToTarget();
+                }else {
+                    Message msg = handlerBase.obtainMessage(msg_base_http_erro);
+                    msg.obj = heRe.getResponseMsg();
+                    msg.sendToTarget();
+                }
+            }
+        }).start();
     }
 
     @Override
@@ -107,12 +162,15 @@ public class MainMenuActivity extends BaseMenuActivity implements BaseMenuActivi
             case 1:
                 break;
             case 2:
+                intent = new Intent(this,
+                        CommodityQueryActivity.class);
+                startActivity(intent);
                 break;
             case 3:
                 break;
             case 4:
                 intent = new Intent(this, UserMenuActivity.class);
-                startActivityForResult(intent, 0);
+                startActivity(intent);
                 break;
         }
     }

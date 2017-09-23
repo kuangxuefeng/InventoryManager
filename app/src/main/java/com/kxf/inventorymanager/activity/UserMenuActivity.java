@@ -51,6 +51,11 @@ public class UserMenuActivity extends BaseMenuActivity implements BaseMenuActivi
                 intent = new Intent(this, UserListActivity.class);
                 startActivity(intent);
                 break;
+            case 2:
+                intent = new Intent(this, UserModifyActivity.class);
+                intent.putExtra(UserModifyActivity.KEY_USER_MODIF_TYPE, 2);
+                startActivity(intent);
+                break;
         }
     }
 }

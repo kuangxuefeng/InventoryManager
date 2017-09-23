@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.kxf.inventorymanager.AppConfig;
 import com.kxf.inventorymanager.MyApplication;
@@ -31,6 +33,8 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 
 	public static final String DEFAULT_ROOT_NAME = "root";
 	public static final String DEFAULT_ROOT_PW = "qazwsx";
+	public static final String KEY_USER_MODIF_TYPE = "key_user_modif_type";
+	public static final String KEY_USER_OLD = "key_user_old";
 	private Button btn_join_exit = null;
 	private Button btn_join_sure = null;
 	private EditText et_join_name = null;
@@ -44,16 +48,36 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 	private ArrayAdapter<String> arr_adapter;
 	private User userNew;
 	private User userOld;
+	private int userModifType = 1;//1 add; 2 update; 3 show
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_join);
-		setTopTitle("注册");
 		init();
 	}
 
 	private void init() {
+		userModifType = getIntent().getIntExtra(KEY_USER_MODIF_TYPE, 1);
+		String userStr = getIntent().getStringExtra(KEY_USER_OLD);
+		if (!TextUtils.isEmpty(userStr)){
+			Gson gson = new Gson();
+			userOld = gson.fromJson(userStr, User.class);
+		}
+		LogUtil.d("userModifType=" + userModifType);
+		switch (userModifType){
+			case 1:
+				setTopTitle("注册");
+				break;
+			case 2:
+				setTopTitle("信息修改");
+				userOld = user;
+				break;
+			case 3:
+				setTopTitle("用户信息");
+				break;
+		}
+
 		btn_join_exit = (Button) findViewById(R.id.btn_join_exit);
 		btn_join_sure = (Button) findViewById(R.id.btn_join_sure);
 		et_join_name = (EditText) findViewById(R.id.et_join_name);
@@ -68,13 +92,13 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 		switch (user.getPermissions()){
 			case 1:
 				data_list = new ArrayList<>();
-				data_list.add("普通用户");
+				data_list.add(parseQX(0));
 				break;
 
 			case 2:
 				data_list = new ArrayList<>();
-				data_list.add("普通用户");
-				data_list.add("管理员");
+				data_list.add(parseQX(0));
+				data_list.add(parseQX(1));
 				break;
 		}
 		//适配器
@@ -83,6 +107,31 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 		arr_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		//加载适配器
 		et_join_qx.setAdapter(arr_adapter);
+		if (2 == userModifType || 3 == userModifType){
+			data_list.add(parseQX(userOld.getPermissions()));
+			et_join_qx.setSelection(data_list.indexOf(parseQX(userOld.getPermissions())));
+			if (2 == userOld.getPermissions()){
+				et_join_qx.setEnabled(false);
+			}
+			et_join_name.setFocusable(false);
+
+			et_join_name.setText(userOld.getName());
+			et_join_pw.setText(userOld.getPw());
+			et_join_pw_again.setText(userOld.getPw());
+			et_join_tel.setText(userOld.getTel());
+			et_join_address.setText(userOld.getAddress());
+			et_join_info.setText(userOld.getInfo());
+		}
+		if (3 == userModifType){
+			et_join_pw.setFocusable(false);
+			et_join_pw_again.setFocusable(false);
+			et_join_qx.setEnabled(false);
+			et_join_tel.setFocusable(false);
+			et_join_address.setFocusable(false);
+			et_join_info.setFocusable(false);
+
+			btn_join_exit.setVisibility(View.GONE);
+		}
 	}
 
 	private Handler handler = new Handler() {
@@ -113,10 +162,6 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 						showDialogYes("注册失败，请重试！");
 					}
 					break;
-				case 1005:
-					String str = (String) msg.obj;
-					showDialogYes(str);
-					break;
 				default:
 					break;
 			}
@@ -130,29 +175,39 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 				finish();
 				break;
 			case R.id.btn_join_sure:
+				if (3 == userModifType){
+					finish();
+					return;
+				}
 				if (chickData()) {
 					if (AppConfig.userCheckOnLine){
-						new Thread(new Runnable() {
+						switch (userModifType){
+							case 1:
+								new Thread(new Runnable() {
 
-							@Override
-							public void run() {
-								HttpEntity<User> he = new HttpEntity<User>();
-								he.setRequestCode("1001");
-								he.setTs(new User[]{userNew});
-								String reStr = HttpUtils.sendMsg(HttpUtils.USER_URL, he);
-                                Type typeOfT = new TypeToken<HttpEntity<User>>(){}.getType();
-								HttpEntity<User> heRe = HttpUtils.ParseJson(he, reStr, typeOfT);
-								if ("0000".equals(heRe.getResponseCode())) {
-									Message msg = handler.obtainMessage(1000);
-									msg.obj = "1";
-									msg.sendToTarget();
-								}else {
-									Message msg = handler.obtainMessage(1005);
-									msg.obj = heRe.getResponseMsg();
-									msg.sendToTarget();
-								}
-							}
-						}).start();
+									@Override
+									public void run() {
+										HttpEntity<User> he = new HttpEntity<User>();
+										he.setRequestCode("1001");
+										he.setTs(new User[]{userNew});
+										String reStr = HttpUtils.sendMsg(HttpUtils.USER_URL, he);
+										Type typeOfT = new TypeToken<HttpEntity<User>>(){}.getType();
+										HttpEntity<User> heRe = HttpUtils.ParseJson(he, reStr, typeOfT);
+										if ("0000".equals(heRe.getResponseCode())) {
+											Message msg = handler.obtainMessage(1000);
+											msg.obj = "1";
+											msg.sendToTarget();
+										}else {
+											Message msg = handlerBase.obtainMessage(1005);
+											msg.obj = heRe.getResponseMsg();
+											msg.sendToTarget();
+										}
+									}
+								}).start();
+								break;
+							case 2:
+								break;
+						}
 						return;
 					}
 				}
@@ -212,21 +267,25 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 		user.setPermissions(pos);
 
 		if (!AppConfig.userCheckOnLine){
-			User u = null;
-			try {
-				u = MyApplication.db().selector(User.class).where("name", "=", name).findFirst();
-			} catch (DbException e) {
-				e.printStackTrace();
-			}
-			if (null != u){
-				showDialogYes("用户名已存在");
-				et_join_name.setText(null);
-				return false;
-			}
-			try {
-				MyApplication.db().save(user);
-			} catch (DbException e) {
-				e.printStackTrace();
+			switch (userModifType){
+				case 1:
+					User u = null;
+					try {
+						u = MyApplication.db().selector(User.class).where("name", "=", name).findFirst();
+					} catch (DbException e) {
+						e.printStackTrace();
+					}
+					if (null != u){
+						showDialogYes("用户名已存在");
+						et_join_name.setText(null);
+						return false;
+					}
+					try {
+						MyApplication.db().save(user);
+					} catch (DbException e) {
+						e.printStackTrace();
+					}
+					break;
 			}
 		}
 
@@ -234,56 +293,19 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 		return true;
 	}
 
-//	/**
-//	 *
-//	 * @Title: query
-//	 * @Description: TODO(充值查询)
-//	 * @param @param user
-//	 * @param @param money
-//	 * @param @return 设定文件
-//	 * @return String 返回类型
-//	 * @throws
-//	 */
-//	private String query(User user, String flag) {
-//		// 查询参数
-//		String queryString = "user=" + JsonUtil.userToJson(user) + "&flag="
-//				+ flag;
-//		// url
-//		String url = HttpUtil.BASE_URL + "servlet/JoinServlet?" + queryString;
-//		Log.i(TAG, "url=" + url);
-//		// 查询返回结果
-//		try {
-//			return HttpUtil.queryStringForPost(url);
-//		} catch (ClientProtocolException e) {
-//			Log.e(TAG, "ClientProtocolException", e);
-//		} catch (IOException e) {
-//			Log.e(TAG, "IOException", e);
-//		}
-//		return null;
-//	}
-//
-//	private String doQuery(User user, String flag) {
-//		Log.i(TAG, "doQuery......");
-//		String Result_Show = null;
-//		HttpClient httpclient = new DefaultHttpClient();
-//		HttpPost httppost = new HttpPost(HttpUtil.BASE_URL
-//				+ "servlet/JoinServlet"+"?flag="
-//				+ flag);
-//		try {
-//			httppost.setEntity(new StringEntity( JsonUtil.userToJson(user)));
-//			HttpResponse httpres = httpclient.execute(httppost);
-//
-//			if (httpres.getStatusLine().getStatusCode() == 200) {
-//				Log.d(TAG, "成功连接信号");
-//				Result_Show = EntityUtils.toString(httpres.getEntity());
-////				JSONObject JsonResult = new JSONObject(Res);
-////				Result_Show = JsonResult.toString();
-//				Log.d(TAG, Result_Show);
-//			}
-//
-//		} catch (Exception e) {
-//			Log.d(TAG, e.toString());
-//		}
-//		return Result_Show;
-//	}
+	public static String parseQX(int permiss){
+		String qx = "普通用户";
+		switch (permiss){
+			case 0:
+				qx = "普通用户";
+				break;
+			case 1:
+				qx = "管理员";
+				break;
+			case 2:
+				qx = "超级管理员";
+				break;
+		}
+		return qx;
+	}
 }

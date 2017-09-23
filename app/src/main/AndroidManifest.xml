@@ -48,7 +48,8 @@
         <activity android:name=".activity.BaseMenuActivity" />
         <activity android:name=".activity.BaseListActivity" />
         <activity android:name=".activity.UserListActivity" />
-        <activity android:name=".activity.LoadActivity"></activity>
+        <activity android:name=".activity.LoadActivity" />
+        <activity android:name=".activity.CommodityQueryActivity"></activity>
     </application>
 
 </manifest>
