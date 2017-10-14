@@ -65,12 +65,13 @@ public class MainMenuActivity extends BaseMenuActivity implements BaseMenuActivi
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        LogUtil.i("data=" + data);
         super.onActivityResult(requestCode, resultCode, data);
         // 扫描二维码/条码回传
         if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
             if (data != null) {
                 String content = data.getStringExtra(CaptureActivity.DECODED_CONTENT_KEY);
-                Bitmap bitmap = data.getParcelableExtra(CaptureActivity.DECODED_BITMAP_KEY);
+//                Bitmap bitmap = data.getParcelableExtra(CaptureActivity.DECODED_BITMAP_KEY);
                 Toast.makeText(this, content, Toast.LENGTH_SHORT).show();
 
                 doUploadNet(content);
