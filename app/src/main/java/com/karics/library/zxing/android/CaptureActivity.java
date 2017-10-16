@@ -21,6 +21,7 @@ import com.karics.library.zxing.camera.CameraManager;
 import com.karics.library.zxing.view.ViewfinderView;
 import com.kxf.inventorymanager.R;
 import com.kxf.inventorymanager.activity.BaseActivity;
+import com.kxf.inventorymanager.utils.LogUtil;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -189,7 +190,8 @@ public final class CaptureActivity extends BaseActivity implements
 
 			Intent intent = getIntent();
 			intent.putExtra(DECODED_CONTENT_KEY, rawResult.getText());
-			intent.putExtra(DECODED_BITMAP_KEY, barcode);
+//			intent.putExtra(DECODED_BITMAP_KEY, barcode);
+			LogUtil.i("intent="+intent.getExtras());
 			setResult(RESULT_OK, intent);
 			finish();
 		}
