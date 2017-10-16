@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -39,6 +40,7 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 	private Button btn_join_exit = null;
 	private Button btn_join_sure, btn_join_modify, btn_join_del;
 	private RelativeLayout rl_join_exit, rl_join_modify, rl_join_del;
+	private LinearLayout ll_join_pw, ll_join_pw_again;
 	private EditText et_join_name = null;
 	private EditText et_join_pw = null;
 	private EditText et_join_pw_again = null;
@@ -100,6 +102,8 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 		rl_join_exit = (RelativeLayout) findViewById(R.id.rl_join_exit);
 		rl_join_modify = (RelativeLayout) findViewById(R.id.rl_join_modify);
 		rl_join_del = (RelativeLayout) findViewById(R.id.rl_join_del);
+		ll_join_pw = (LinearLayout) findViewById(R.id.ll_join_pw);
+		ll_join_pw_again = (LinearLayout) findViewById(R.id.ll_join_pw_again);
 
 		switch (user.getPermissions()){
 			case 1:
@@ -128,11 +132,15 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 			if (2 == userOld.getPermissions()){
 				et_join_qx.setEnabled(false);
 			}
+			if (3 == userModifType){
+				ll_join_pw.setVisibility(View.GONE);
+				ll_join_pw_again.setVisibility(View.GONE);
+			}else {
+				et_join_pw.setText(userOld.getPw());
+				et_join_pw_again.setText(userOld.getPw());
+			}
 			et_join_name.setFocusable(false);
-
 			et_join_name.setText(userOld.getName());
-			et_join_pw.setText(userOld.getPw());
-			et_join_pw_again.setText(userOld.getPw());
 			et_join_tel.setText(formatText(userOld.getTel()));
 			et_join_address.setText(formatText(userOld.getAddress()));
 			et_join_info.setText(formatText(userOld.getInfo()));
@@ -146,8 +154,10 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 			et_join_info.setFocusable(false);
 
 			rl_join_exit.setVisibility(View.GONE);
-			rl_join_modify.setVisibility(View.VISIBLE);
-			rl_join_del.setVisibility(View.VISIBLE);
+			if (user.getPermissions()>userOld.getPermissions()){
+				rl_join_modify.setVisibility(View.VISIBLE);
+				rl_join_del.setVisibility(View.VISIBLE);
+			}
 		}
 	}
 
