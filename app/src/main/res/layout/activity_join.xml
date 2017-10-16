@@ -5,200 +5,266 @@
     tools:context=".activity.UserModifyActivity" >
     <include layout="@layout/top_title"
         android:id="@+id/tv_join"/>
-    <LinearLayout
-        android:id="@+id/ll_join_name"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_below="@+id/tv_join"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp" >
-
-        <TextView
-            android:id="@+id/tv_join_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="用户名：" />
-
-        <EditText
-            android:id="@+id/et_join_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:ems="10"
-            android:hint="请输入用户名" >
-        </EditText>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_join_pw"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_below="@+id/ll_join_name"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp" >
-
-        <TextView
-            android:id="@+id/tv_join_pw"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="密      码：" />
-
-        <EditText
-            android:id="@+id/et_join_pw"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:ems="10"
-            android:hint="请输入密码"
-            android:inputType="textPassword" >
-        </EditText>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_join_pw_again"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_below="@+id/ll_join_pw"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp" >
-
-        <TextView
-            android:id="@+id/tv_join_pw_again"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="密      码：" />
-
-        <EditText
-            android:id="@+id/et_join_pw_again"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:ems="10"
-            android:hint="请确认密码"
-            android:inputType="textPassword" >
-        </EditText>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_join_qx"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_below="@+id/ll_join_pw_again"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp" >
-
-        <TextView
-            android:id="@+id/tv_join_qx"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="权      限：" />
-
-        <Spinner
-            android:id="@+id/et_join_qx"
-            android:layout_width="220dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:inputType="number"
-             >
-        </Spinner>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_join_tel"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_below="@+id/ll_join_qx"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp" >
-
-        <TextView
-            android:id="@+id/tv_join_tel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="手机号：" />
-
-        <EditText
-            android:id="@+id/et_join_tel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:inputType="number"
-            android:ems="10"
-            android:maxLength="11"
-            android:hint="请输入11位手机号" >
-        </EditText>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_join_address"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_below="@+id/ll_join_tel"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp" >
-
-        <TextView
-            android:id="@+id/tv_join_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="地      址：" />
-
-        <EditText
-            android:id="@+id/et_join_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:ems="10"
-            android:hint="地址可以不填" >
-        </EditText>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_join_info"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_below="@+id/ll_join_address"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp" >
-
-        <TextView
-            android:id="@+id/tv_join_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="备      注：" />
-
-        <EditText
-            android:id="@+id/et_join_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:ems="10"
-            android:hint="备注可以不填" >
-        </EditText>
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_join_btn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@+id/ll_join_info"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginTop="5dp" >
 
-        <Button
-            android:id="@+id/btn_join_exit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/selector_main_button"
-            android:text="取消" />
+        <RelativeLayout
+            android:id="@+id/rl_join_exit"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent">
+            <Button
+                android:id="@+id/btn_join_exit"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/selector_main_button"
+                android:text="取消" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/rl_join_modify"
+            android:visibility="gone"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent">
+            <Button
+                android:id="@+id/btn_join_modify"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/selector_main_button"
+                android:text="修改" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/rl_join_del"
+            android:visibility="gone"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent">
+            <Button
+                android:id="@+id/btn_join_del"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/selector_main_button"
+                android:text="删除" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/rl_join_sure"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent">
+            <Button
+                android:id="@+id/btn_join_sure"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/selector_main_button"
+                android:text="确定" />
+        </RelativeLayout>
 
-        <Button
-            android:id="@+id/btn_join_sure"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:background="@drawable/selector_main_button"
-            android:text="确定" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/join_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:orientation="vertical"
+        android:layout_above="@+id/ll_join_btn"
+        android:layout_below="@+id/tv_join">
+        <LinearLayout
+            android:id="@+id/ll_join_name"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="15dp" >
+
+            <TextView
+                android:id="@+id/tv_join_name"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical|right"
+                android:layout_height="wrap_content"
+                android:text="用户名：" />
+
+            <EditText
+                android:id="@+id/et_join_name"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/shape_et_bg_null"
+                android:hint="请输入用户名" >
+            </EditText>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_join_pw"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp" >
+
+            <TextView
+                android:id="@+id/tv_join_pw"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical|right"
+                android:layout_height="wrap_content"
+                android:text="密码：" />
+
+            <EditText
+                android:id="@+id/et_join_pw"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/shape_et_bg_null"
+                android:hint="请输入密码"
+                android:inputType="textPassword" >
+            </EditText>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_join_pw_again"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp" >
+
+            <TextView
+                android:id="@+id/tv_join_pw_again"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical|right"
+                android:layout_height="wrap_content"
+                android:text="密码：" />
+
+            <EditText
+                android:id="@+id/et_join_pw_again"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/shape_et_bg_null"
+                android:hint="请确认密码"
+                android:inputType="textPassword" >
+            </EditText>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_join_qx"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp" >
+
+            <TextView
+                android:id="@+id/tv_join_qx"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical|right"
+                android:layout_height="wrap_content"
+                android:text="权限：" />
+
+            <Spinner
+                android:id="@+id/et_join_qx"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/shape_et_bg_null"
+                android:inputType="number"
+                >
+            </Spinner>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_join_tel"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp" >
+
+            <TextView
+                android:id="@+id/tv_join_tel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical|right"
+                android:layout_height="wrap_content"
+                android:text="手机号：" />
+
+            <EditText
+                android:id="@+id/et_join_tel"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:inputType="number"
+                android:background="@drawable/shape_et_bg_null"
+                android:maxLength="11"
+                android:hint="请输入11位手机号" >
+            </EditText>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_join_address"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp" >
+
+            <TextView
+                android:id="@+id/tv_join_address"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical|right"
+                android:layout_height="wrap_content"
+                android:text="地址：" />
+
+            <EditText
+                android:id="@+id/et_join_address"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/shape_et_bg_null"
+                android:hint="地址可以不填" >
+            </EditText>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_join_info"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp" >
+
+            <TextView
+                android:id="@+id/tv_join_info"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical|right"
+                android:layout_height="wrap_content"
+                android:text="备注：" />
+
+            <EditText
+                android:id="@+id/et_join_info"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/shape_et_bg_null"
+                android:hint="备注可以不填" >
+            </EditText>
+        </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>

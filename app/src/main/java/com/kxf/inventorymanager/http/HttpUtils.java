@@ -31,6 +31,7 @@ public class HttpUtils {
         return null;
     }
     public static String sendMsgEx(String urlItem, HttpEntity he) throws IOException {
+        LogUtil.i("urlItem=" + urlItem + "; he=" + he);
         StringBuffer sb = new StringBuffer();
         URL url = new URL(BASE_URL + urlItem);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();

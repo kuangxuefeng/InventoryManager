@@ -24,7 +24,6 @@ import com.kxf.inventorymanager.entity.User;
 import com.kxf.inventorymanager.utils.FormatUtils;
 import com.kxf.inventorymanager.utils.LogUtil;
 
-import static com.kxf.inventorymanager.activity.LoginActivity.KEY_USER;
 
 public class BaseActivity extends Activity {
 
@@ -63,7 +62,11 @@ public class BaseActivity extends Activity {
         tag = this.getPackageName() + "." + this.getLocalClassName();
         tag = "do in " + tag + AppConfig.BASE_ACTIVITY_LOG_INFO_STRING;
         LogUtil.e(tag);
-        String userStr = MyApplication.getShare(KEY_USER);
+        updateLoginUser();
+    }
+
+    protected void updateLoginUser(){
+        String userStr = MyApplication.getShare(LoginActivity.KEY_USER);
         Gson gson = new Gson();
         user = gson.fromJson(userStr, User.class);
     }

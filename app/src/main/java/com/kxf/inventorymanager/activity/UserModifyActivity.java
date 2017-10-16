@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -36,7 +37,8 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 	public static final String KEY_USER_MODIF_TYPE = "key_user_modif_type";
 	public static final String KEY_USER_OLD = "key_user_old";
 	private Button btn_join_exit = null;
-	private Button btn_join_sure = null;
+	private Button btn_join_sure, btn_join_modify, btn_join_del;
+	private RelativeLayout rl_join_exit, rl_join_modify, rl_join_del;
 	private EditText et_join_name = null;
 	private EditText et_join_pw = null;
 	private EditText et_join_pw_again = null;
@@ -71,7 +73,6 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 				break;
 			case 2:
 				setTopTitle("信息修改");
-				userOld = user;
 				break;
 			case 3:
 				setTopTitle("用户信息");
@@ -80,6 +81,9 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 
 		btn_join_exit = (Button) findViewById(R.id.btn_join_exit);
 		btn_join_sure = (Button) findViewById(R.id.btn_join_sure);
+		btn_join_modify = (Button) findViewById(R.id.btn_join_modify);
+		btn_join_del = (Button) findViewById(R.id.btn_join_del);
+
 		et_join_name = (EditText) findViewById(R.id.et_join_name);
 		et_join_pw = (EditText) findViewById(R.id.et_join_pw);
 		et_join_pw_again = (EditText) findViewById(R.id.et_join_pw_again);
@@ -87,8 +91,16 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 		et_join_tel = (EditText) findViewById(R.id.et_join_tel);
 		et_join_address = (EditText) findViewById(R.id.et_join_address);
 		et_join_info = (EditText) findViewById(R.id.et_join_info);
+
 		btn_join_exit.setOnClickListener(this);
 		btn_join_sure.setOnClickListener(this);
+		btn_join_modify.setOnClickListener(this);
+		btn_join_del.setOnClickListener(this);
+
+		rl_join_exit = (RelativeLayout) findViewById(R.id.rl_join_exit);
+		rl_join_modify = (RelativeLayout) findViewById(R.id.rl_join_modify);
+		rl_join_del = (RelativeLayout) findViewById(R.id.rl_join_del);
+
 		switch (user.getPermissions()){
 			case 1:
 				data_list = new ArrayList<>();
@@ -108,8 +120,11 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 		//加载适配器
 		et_join_qx.setAdapter(arr_adapter);
 		if (2 == userModifType || 3 == userModifType){
-			data_list.add(parseQX(userOld.getPermissions()));
-			et_join_qx.setSelection(data_list.indexOf(parseQX(userOld.getPermissions())));
+			String perStr = parseQX(userOld.getPermissions());
+			if (!data_list.contains(perStr)){
+				data_list.add(perStr);
+			}
+			et_join_qx.setSelection(data_list.indexOf(perStr));
 			if (2 == userOld.getPermissions()){
 				et_join_qx.setEnabled(false);
 			}
@@ -118,9 +133,9 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 			et_join_name.setText(userOld.getName());
 			et_join_pw.setText(userOld.getPw());
 			et_join_pw_again.setText(userOld.getPw());
-			et_join_tel.setText(userOld.getTel());
-			et_join_address.setText(userOld.getAddress());
-			et_join_info.setText(userOld.getInfo());
+			et_join_tel.setText(formatText(userOld.getTel()));
+			et_join_address.setText(formatText(userOld.getAddress()));
+			et_join_info.setText(formatText(userOld.getInfo()));
 		}
 		if (3 == userModifType){
 			et_join_pw.setFocusable(false);
@@ -130,7 +145,9 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 			et_join_address.setFocusable(false);
 			et_join_info.setFocusable(false);
 
-			btn_join_exit.setVisibility(View.GONE);
+			rl_join_exit.setVisibility(View.GONE);
+			rl_join_modify.setVisibility(View.VISIBLE);
+			rl_join_del.setVisibility(View.VISIBLE);
 		}
 	}
 
@@ -162,6 +179,18 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 						showDialogYes("注册失败，请重试！");
 					}
 					break;
+				case 1001:
+					Toast.makeText(UserModifyActivity.this, "修改成功", Toast.LENGTH_LONG).show();
+					if (userNew.getId() == user.getId()){
+						Gson gson = new Gson();
+						MyApplication.saveShare(LoginActivity.KEY_USER, gson.toJson(userNew));
+					}
+					finish();
+					break;
+				case 1002:
+					Toast.makeText(UserModifyActivity.this, "删除成功", Toast.LENGTH_LONG).show();
+					finish();
+					break;
 				default:
 					break;
 			}
@@ -170,8 +199,18 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 
 	@Override
 	public void onClick(View v) {
+		LogUtil.d("v.getId()=" + v.getId());
+		LogUtil.d("userModifType=" + userModifType);
 		switch (v.getId()) {
 			case R.id.btn_join_exit:
+				finish();
+				break;
+			case R.id.btn_join_modify:
+				Intent intent = new Intent(this, UserModifyActivity.class);
+				Gson gson = new Gson();
+				intent.putExtra(UserModifyActivity.KEY_USER_OLD, gson.toJson(userOld));
+				intent.putExtra(UserModifyActivity.KEY_USER_MODIF_TYPE, 2);
+				startActivity(intent);
 				finish();
 				break;
 			case R.id.btn_join_sure:
@@ -198,7 +237,7 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 											msg.obj = "1";
 											msg.sendToTarget();
 										}else {
-											Message msg = handlerBase.obtainMessage(1005);
+											Message msg = handlerBase.obtainMessage(msg_base_http_erro);
 											msg.obj = heRe.getResponseMsg();
 											msg.sendToTarget();
 										}
@@ -206,6 +245,28 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 								}).start();
 								break;
 							case 2:
+								new Thread(new Runnable() {
+
+									@Override
+									public void run() {
+										HttpEntity<User> he = new HttpEntity<User>();
+										he.setRequestCode("1003");
+										userNew.setId(userOld.getId());
+										he.setTs(new User[]{userNew});
+										String reStr = HttpUtils.sendMsg(HttpUtils.USER_URL, he);
+										Type typeOfT = new TypeToken<HttpEntity<User>>(){}.getType();
+										HttpEntity<User> heRe = HttpUtils.ParseJson(he, reStr, typeOfT);
+										if ("0000".equals(heRe.getResponseCode())) {
+											Message msg = handler.obtainMessage(1001);
+											msg.obj = "1";
+											msg.sendToTarget();
+										}else {
+											Message msg = handlerBase.obtainMessage(msg_base_http_erro);
+											msg.obj = heRe.getResponseMsg();
+											msg.sendToTarget();
+										}
+									}
+								}).start();
 								break;
 						}
 						return;
@@ -214,7 +275,33 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 				Toast.makeText(UserModifyActivity.this, "注册成功", Toast.LENGTH_LONG).show();
 				finish();
 				break;
+			case R.id.btn_join_del:
+				showDialog("是否删除？", "否", null, "是", new Runnable() {
+					@Override
+					public void run() {
+						new Thread(new Runnable() {
 
+							@Override
+							public void run() {
+								HttpEntity<User> he = new HttpEntity<User>();
+								he.setRequestCode("1004");
+								he.setTs(new User[]{userOld});
+								String reStr = HttpUtils.sendMsg(HttpUtils.USER_URL, he);
+								Type typeOfT = new TypeToken<HttpEntity<User>>(){}.getType();
+								HttpEntity<User> heRe = HttpUtils.ParseJson(he, reStr, typeOfT);
+								if ("0000".equals(heRe.getResponseCode())) {
+									Message msg = handler.obtainMessage(1002);
+									msg.sendToTarget();
+								}else {
+									Message msg = handlerBase.obtainMessage(msg_base_http_erro);
+									msg.obj = heRe.getResponseMsg();
+									msg.sendToTarget();
+								}
+							}
+						}).start();
+					}
+				});
+				break;
 			default:
 				break;
 		}
@@ -307,5 +394,12 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 				break;
 		}
 		return qx;
+	}
+
+	public String formatText(String str){
+		if (TextUtils.isEmpty(str) || "null".equalsIgnoreCase(str)){
+			str = null;
+		}
+		return str;
 	}
 }

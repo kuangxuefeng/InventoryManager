@@ -25,6 +25,7 @@ import java.util.List;
 
 public class UserListActivity extends BaseListActivity implements AdapterView.OnItemClickListener {
     private User[] us;
+    private boolean isNeedUpdate = false;
     @Override
     protected String getListTopTitle() {
         return "用户列表";
@@ -97,6 +98,15 @@ public class UserListActivity extends BaseListActivity implements AdapterView.On
         Intent intent = new Intent(this, UserModifyActivity.class);
         intent.putExtra(UserModifyActivity.KEY_USER_MODIF_TYPE, 3);
         intent.putExtra(UserModifyActivity.KEY_USER_OLD, gson.toJson(u));
+        isNeedUpdate = true;
         startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isNeedUpdate){
+            afterInitListView();
+        }
     }
 }
