@@ -45,11 +45,10 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity android:name=".activity.UserMenuActivity" />
-        <activity android:name=".activity.BaseMenuActivity" />
-        <activity android:name=".activity.BaseListActivity" />
         <activity android:name=".activity.UserListActivity" />
         <activity android:name=".activity.LoadActivity" />
-        <activity android:name=".activity.CommodityQueryActivity"></activity>
+        <activity android:name=".activity.CommodityQueryActivity" />
+        <activity android:name=".activity.CommodityShowActivity"></activity>
     </application>
 
 </manifest>

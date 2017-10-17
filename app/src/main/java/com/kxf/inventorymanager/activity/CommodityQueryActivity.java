@@ -1,5 +1,6 @@
 package com.kxf.inventorymanager.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.kxf.inventorymanager.R;
 import com.kxf.inventorymanager.entity.Commodity;
@@ -24,6 +26,7 @@ import java.util.List;
 
 public class CommodityQueryActivity extends BaseListActivity implements AdapterView.OnItemClickListener {
     private Commodity[] coms;
+    private boolean isNeedUpdate = false;
 
     @Override
     protected String getListTopTitle() {
@@ -32,9 +35,10 @@ public class CommodityQueryActivity extends BaseListActivity implements AdapterV
 
     @Override
     protected View getListTitleView() {
-        View v = LayoutInflater.from(this).inflate(R.layout.user_item_list, null);
-        ((TextView)v.findViewById(R.id.tv_name_user_item)).setText("二维码");
-        ((TextView)v.findViewById(R.id.tv_permiss_user_item)).setText("时间");
+        View v = LayoutInflater.from(this).inflate(R.layout.commodity_item_list, null);
+        ((TextView)v.findViewById(R.id.cil_item1)).setText("用户");
+        ((TextView)v.findViewById(R.id.cil_item2)).setText("号码");
+        ((TextView)v.findViewById(R.id.cil_item3)).setText("时间");
         v.setBackgroundColor(Color.rgb(192,192,192));
         return v;
     }
@@ -69,14 +73,19 @@ public class CommodityQueryActivity extends BaseListActivity implements AdapterV
                             if (null != coms && coms.length > 0){
                                 for (Commodity c : coms){
                                     HashMap<String, String> map = new HashMap<String, String>();
+                                    if (0==c.getState()){
+                                        map.put("state", "已入库");
+                                    }else {
+                                        map.put("state", "已出库");
+                                    }
                                     map.put("qcode", c.getQcode());
-                                    map.put("time", FormatUtils.FormatTime(c.getYmd() + c.getHmsS(), FormatUtils.FORMAT_COMMODITY_YMD + FormatUtils.FORMAT_COMMODITY_HMSS, FormatUtils.FORMAT_COMMODITY_SHOW));
+                                    map.put("time", FormatUtils.FormatTime(c.getYmd() + c.getHmsS(), FormatUtils.FORMAT_COMMODITY_YMD + FormatUtils.FORMAT_COMMODITY_HMSS, FormatUtils.FORMAT_COMMODITY_SHOW1));
                                     data.add(map);
                                 }
                             }
-                            String[] from = new String[]{"qcode", "time"};
-                            int[] to = new int[]{R.id.tv_name_user_item, R.id.tv_permiss_user_item};
-                            ListAdapter adapter = new SimpleAdapter(mActivity, data, R.layout.user_item_list, from, to);
+                            String[] from = new String[]{"state", "qcode", "time"};
+                            int[] to = new int[]{R.id.cil_item1, R.id.cil_item2, R.id.cil_item3};
+                            ListAdapter adapter = new SimpleAdapter(mActivity, data, R.layout.commodity_item_list, from, to);
                             lv_base.setAdapter(adapter);
                             lv_base.deferNotifyDataSetChanged();
                             load_pb.setVisibility(View.GONE);
@@ -84,6 +93,7 @@ public class CommodityQueryActivity extends BaseListActivity implements AdapterV
                         }
                     });
                 }else {
+                    load_pb.setVisibility(View.GONE);
                     Message msg = handlerBase.obtainMessage(msg_base_http_erro);
                     msg.obj = heRe.getResponseMsg();
                     msg.sendToTarget();
@@ -94,11 +104,23 @@ public class CommodityQueryActivity extends BaseListActivity implements AdapterV
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+        Intent intent = new Intent(mActivity, CommodityShowActivity.class);
+        intent.putExtra(CommodityShowActivity.KEY_COMMODITY_SHOW, new Gson().toJson(coms[position]));
+        isNeedUpdate = true;
+        startActivity(intent);
     }
 
 //    @Override
 //    protected void onCreate(Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);
 //    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isNeedUpdate){
+            afterInitListView();
+        }
+    }
 }

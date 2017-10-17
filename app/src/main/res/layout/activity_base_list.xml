@@ -18,10 +18,25 @@
         android:visibility="gone"
         android:layout_below="@+id/list_top_title">
     </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/rl_btn"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        android:layout_height="50dp">
+        <Button
+            android:id="@+id/btn_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_main_button"
+            android:layout_centerInParent="true"
+            android:text="出库"/>
+    </RelativeLayout>
     <ListView
         android:id="@+id/lv_base"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/rl_btn"
         android:layout_below="@+id/ll_lv_title"></ListView>
     <ProgressBar
         android:id="@+id/load_pb"

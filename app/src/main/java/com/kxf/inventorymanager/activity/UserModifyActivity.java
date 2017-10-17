@@ -23,6 +23,7 @@ import com.kxf.inventorymanager.R;
 import com.kxf.inventorymanager.entity.User;
 import com.kxf.inventorymanager.http.HttpEntity;
 import com.kxf.inventorymanager.http.HttpUtils;
+import com.kxf.inventorymanager.utils.FormatUtils;
 import com.kxf.inventorymanager.utils.LogUtil;
 
 import org.xutils.ex.DbException;
@@ -141,9 +142,9 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 			}
 			et_join_name.setFocusable(false);
 			et_join_name.setText(userOld.getName());
-			et_join_tel.setText(formatText(userOld.getTel()));
-			et_join_address.setText(formatText(userOld.getAddress()));
-			et_join_info.setText(formatText(userOld.getInfo()));
+			et_join_tel.setText(FormatUtils.formatText(userOld.getTel()));
+			et_join_address.setText(FormatUtils.formatText(userOld.getAddress()));
+			et_join_info.setText(FormatUtils.formatText(userOld.getInfo()));
 		}
 		if (3 == userModifType){
 			et_join_pw.setFocusable(false);
@@ -404,12 +405,5 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 				break;
 		}
 		return qx;
-	}
-
-	public String formatText(String str){
-		if (TextUtils.isEmpty(str) || "null".equalsIgnoreCase(str)){
-			str = null;
-		}
-		return str;
 	}
 }

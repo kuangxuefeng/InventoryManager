@@ -14,6 +14,7 @@ public class FormatUtils {
     public static final String FORMAT_COMMODITY_YMD = "yyyyMMdd";
     public static final String FORMAT_COMMODITY_HMSS = "HHmmssSSS";
     public static final String FORMAT_COMMODITY_SHOW = "yyyy/MM/dd HH:mm:ss SSS";
+    public static final String FORMAT_COMMODITY_SHOW1 = "yyyy/MM/dd HH:mm:ss";
     public enum ALIGN{
         LEFT, RIGHT, CENTER
     }
@@ -55,5 +56,12 @@ public class FormatUtils {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public static String formatText(String str){
+        if (TextUtils.isEmpty(str) || "null".equalsIgnoreCase(str)){
+            str = null;
+        }
+        return str;
     }
 }
