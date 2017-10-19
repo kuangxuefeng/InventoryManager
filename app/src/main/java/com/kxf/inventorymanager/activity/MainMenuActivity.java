@@ -1,7 +1,6 @@
 package com.kxf.inventorymanager.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 import android.view.KeyEvent;
@@ -12,7 +11,6 @@ import com.google.gson.reflect.TypeToken;
 import com.karics.library.zxing.android.CaptureActivity;
 import com.kxf.inventorymanager.MyApplication;
 import com.kxf.inventorymanager.entity.Commodity;
-import com.kxf.inventorymanager.entity.User;
 import com.kxf.inventorymanager.http.HttpEntity;
 import com.kxf.inventorymanager.http.HttpUtils;
 import com.kxf.inventorymanager.utils.FormatUtils;
@@ -93,7 +91,7 @@ public class MainMenuActivity extends BaseMenuActivity implements BaseMenuActivi
                 com.setYmd(FormatUtils.getTimeByFormat(FormatUtils.FORMAT_COMMODITY_YMD));
                 he.setTs(new Commodity[]{com});
                 String reStr = HttpUtils.sendMsg(HttpUtils.COMMODITY_URL, he);
-                Type typeOfT = new TypeToken<HttpEntity<User>>(){}.getType();
+                Type typeOfT = new TypeToken<HttpEntity<Commodity>>(){}.getType();
                 HttpEntity<Commodity> heRe = HttpUtils.ParseJson(he, reStr, typeOfT);
                 if ("0000".equals(heRe.getResponseCode())) {
                     Message msg = handler.obtainMessage(1010);
@@ -101,7 +99,11 @@ public class MainMenuActivity extends BaseMenuActivity implements BaseMenuActivi
                     msg.sendToTarget();
                 }else {
                     Message msg = handlerBase.obtainMessage(msg_base_http_erro);
-                    msg.obj = heRe.getResponseMsg();
+                    if (null != heRe.getTs() && heRe.getTs().length>0){
+                        msg.obj = heRe.getResponseMsg() + "，原入库员：" + heRe.getTs()[0].getUserId();
+                    }else {
+                        msg.obj = heRe.getResponseMsg();
+                    }
                     msg.sendToTarget();
                 }
             }

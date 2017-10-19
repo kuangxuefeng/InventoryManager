@@ -56,6 +56,8 @@ public class CommodityShowActivity extends BaseListActivity {
         if (null != commodity){
             if (0== commodity.getState()){
                 rl_btn.setVisibility(View.VISIBLE);
+            }else {
+                rl_btn.setVisibility(View.GONE);
             }
             List<HashMap<String, String>> data = new ArrayList();
             HashMap<String, String> map = new HashMap<String, String>();
@@ -73,6 +75,10 @@ public class CommodityShowActivity extends BaseListActivity {
             map = new HashMap<String, String>();
             map.put("name", "时间");
             map.put("value", FormatUtils.FormatTime(commodity.getYmd() + commodity.getHmsS(), FormatUtils.FORMAT_COMMODITY_YMD + FormatUtils.FORMAT_COMMODITY_HMSS, FormatUtils.FORMAT_COMMODITY_SHOW1));
+            data.add(map);
+            map = new HashMap<String, String>();
+            map.put("name", "入库员");
+            map.put("value", commodity.getUserId()+"");
             data.add(map);
             String[] from = new String[]{"name", "value"};
             int[] to = new int[]{R.id.tv_name_user_item, R.id.tv_permiss_user_item};

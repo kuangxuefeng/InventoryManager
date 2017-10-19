@@ -55,7 +55,7 @@ public class CommodityQueryActivity extends BaseListActivity implements AdapterV
             @Override
             public void run() {
                 HttpEntity<Commodity> he = new HttpEntity();
-                he.setRequestCode("1002");
+                he.setRequestCode("1004");
                 Commodity com = new Commodity();
                 com.setUserId(user.getId());
                 he.setTs(new Commodity[]{com});
