@@ -3,6 +3,7 @@ package com.kxf.inventorymanager.http;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.kxf.inventorymanager.utils.EncUtil;
 import com.kxf.inventorymanager.utils.LogUtil;
 
 import java.io.BufferedReader;
@@ -48,7 +49,7 @@ public class HttpUtils {
         // 设定传送的内容类型是可序列化的java对象
         // (如果不设此项,在传送序列化对象时,当WEB服务默认的不是这种类型时可能抛java.io.EOFException)
 //		con.setRequestProperty("Content-type", "application/x-java-serialized-object");
-        con.setRequestProperty("Content-type", "application/json");
+        con.setRequestProperty("Content-type", "text/plain; charset=utf-8");//application/json
 
         // 设定请求的方法为"POST"，默认是GET
         con.setRequestMethod("POST");
@@ -59,9 +60,11 @@ public class HttpUtils {
         Gson gson = new Gson();
         String jstr = gson.toJson(he);
         LogUtil.d("jstr=" + jstr);
+        jstr = EncUtil.encryptAsString(null, jstr);
+        LogUtil.d("加密后 jstr=" + jstr);
 
         OutputStream out = con.getOutputStream();
-        out.write(jstr.getBytes());
+        out.write(jstr.getBytes("utf-8"));
         out.flush();
         out.close();
 
@@ -82,7 +85,9 @@ public class HttpUtils {
         }
         LogUtil.d("sb=" + sb);
         con.disconnect();
-        return sb.toString();
+        String re = EncUtil.desEncryptAsString(null, sb.toString());
+        LogUtil.d("解密 re=" + re);
+        return re;
     }
 
     public static <T> HttpEntity<T> ParseJson(HttpEntity<T> reqHe, String jsonStr, Type typeOfT){
