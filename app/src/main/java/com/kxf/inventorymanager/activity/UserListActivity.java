@@ -106,6 +106,7 @@ public class UserListActivity extends BaseListActivity implements AdapterView.On
     protected void onResume() {
         super.onResume();
         if (isNeedUpdate){
+            isNeedUpdate = false;
             afterInitListView();
         }
     }

@@ -2,14 +2,19 @@ package com.kxf.inventorymanager.activity;
 
 import android.os.Message;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.google.zxing.BarcodeFormat;
+import com.karics.library.zxing.encode.CodeCreator;
 import com.kxf.inventorymanager.R;
 import com.kxf.inventorymanager.entity.Commodity;
 import com.kxf.inventorymanager.http.HttpEntity;
@@ -27,9 +32,14 @@ public class CommodityShowActivity extends BaseListActivity {
     private Commodity commodity;
     private RelativeLayout rl_btn;
     private Button btn_out;
+    private ImageView iv_qcode, iv_codebar;
+    private TextView tv_code_title;
     @Override
     protected String getListTopTitle() {
         rl_btn = (RelativeLayout) findViewById(R.id.rl_btn);
+        iv_qcode = (ImageView) findViewById(R.id.iv_qcode);
+        iv_codebar = (ImageView) findViewById(R.id.iv_codebar);
+        tv_code_title = (TextView) findViewById(R.id.tv_code_title);
         btn_out = (Button) findViewById(R.id.btn_out);
         btn_out.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,6 +68,23 @@ public class CommodityShowActivity extends BaseListActivity {
                 rl_btn.setVisibility(View.VISIBLE);
             }else {
                 rl_btn.setVisibility(View.GONE);
+            }
+            try {
+                WindowManager wm1 = this.getWindowManager();
+                int width = wm1.getDefaultDisplay().getWidth();
+                int height = wm1.getDefaultDisplay().getHeight();
+                tv_code_title.setText("" + commodity.getQcode());
+                tv_code_title.setVisibility(View.VISIBLE);
+                try {
+                    iv_codebar.setImageBitmap(CodeCreator.createCode(commodity.getQcode(), BarcodeFormat.CODE_128, width/3*2, (width/3*2)/4));
+                    iv_codebar.setVisibility(View.VISIBLE);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                iv_qcode.setImageBitmap(CodeCreator.createCode(commodity.getQcode(), BarcodeFormat.QR_CODE, width/5*4, width/5*4));
+                iv_qcode.setVisibility(View.VISIBLE);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             List<HashMap<String, String>> data = new ArrayList();
             HashMap<String, String> map = new HashMap<String, String>();

@@ -1,30 +1,32 @@
 package com.karics.library.zxing.encode;
 
+import android.graphics.Bitmap;
+
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
-import android.graphics.Bitmap;
-
 public class CodeCreator {
-
 	/**
 	 * 生成QRCode（二维码）
-	 * 
-	 * @param str
+	 *
+	 * @param url
 	 * @return
 	 * @throws WriterException
 	 */
-	public static Bitmap createQRCode(String url) throws WriterException {
+	public static Bitmap createQRCode(String url) throws WriterException{
+		return createCode(url, BarcodeFormat.QR_CODE, 300, 300);
+	}
+
+	public static Bitmap createCode(String url, BarcodeFormat format, int widthC, int heightC) throws WriterException {
 
 		if (url == null || url.equals("")) {
 			return null;
 		}
 
 		// 生成二维矩阵,编码时指定大小,不要生成了图片以后再进行缩放,这样会模糊导致识别失败
-		BitMatrix matrix = new MultiFormatWriter().encode(url,
-				BarcodeFormat.QR_CODE, 300, 300);
+		BitMatrix matrix = new MultiFormatWriter().encode(url, format, widthC, heightC);
 
 		int width = matrix.getWidth();
 		int height = matrix.getHeight();

@@ -120,6 +120,7 @@ public class CommodityQueryActivity extends BaseListActivity implements AdapterV
     protected void onResume() {
         super.onResume();
         if (isNeedUpdate){
+            isNeedUpdate = false;
             afterInitListView();
         }
     }

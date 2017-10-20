@@ -7,6 +7,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.karics.library.zxing.android.CaptureActivity;
 import com.kxf.inventorymanager.MyApplication;
@@ -24,7 +25,8 @@ import java.util.List;
  * Created by kxf on 2017/9/2.
  */
 public class MainMenuActivity extends BaseMenuActivity implements BaseMenuActivity.OnItemClickListener {
-    private static final int REQUEST_CODE_SCAN = 1000;
+    private static final int REQUEST_CODE_SCAN_RK = 1000;
+    private static final int REQUEST_CODE_SCAN_CK = 1001;
     private List<String> itemTitles;
     private Runnable backRun = new Runnable() {
         @Override
@@ -66,7 +68,7 @@ public class MainMenuActivity extends BaseMenuActivity implements BaseMenuActivi
         LogUtil.i("data=" + data);
         super.onActivityResult(requestCode, resultCode, data);
         // 扫描二维码/条码回传
-        if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CODE_SCAN_RK && resultCode == RESULT_OK) {
             if (data != null) {
                 String content = data.getStringExtra(CaptureActivity.DECODED_CONTENT_KEY);
 //                Bitmap bitmap = data.getParcelableExtra(CaptureActivity.DECODED_BITMAP_KEY);
@@ -74,7 +76,40 @@ public class MainMenuActivity extends BaseMenuActivity implements BaseMenuActivi
 
                 doUploadNet(content);
             }
+        } else if (requestCode == REQUEST_CODE_SCAN_CK && resultCode == RESULT_OK){
+            if (data != null) {
+                String content = data.getStringExtra(CaptureActivity.DECODED_CONTENT_KEY);
+                Toast.makeText(this, content, Toast.LENGTH_SHORT).show();
+
+                doCommodityQuery(content);
+            }
         }
+    }
+
+    private void doCommodityQuery(final String content){
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                HttpEntity<Commodity> he = new HttpEntity<Commodity>();
+                he.setRequestCode("1000");
+                Commodity com = new Commodity();
+                com.setQcode(content);
+                he.setTs(new Commodity[]{com});
+                String reStr = HttpUtils.sendMsg(HttpUtils.COMMODITY_URL, he);
+                Type typeOfT = new TypeToken<HttpEntity<Commodity>>(){}.getType();
+                HttpEntity<Commodity> heRe = HttpUtils.ParseJson(he, reStr, typeOfT);
+                if ("0000".equals(heRe.getResponseCode())) {
+                    Intent intent = new Intent(mActivity, CommodityShowActivity.class);
+                    intent.putExtra(CommodityShowActivity.KEY_COMMODITY_SHOW, new Gson().toJson(heRe.getTs()[0]));
+                    startActivity(intent);
+                }else {
+                    Message msg = handlerBase.obtainMessage(msg_base_http_erro);
+                    msg.obj = heRe.getResponseMsg();
+                    msg.sendToTarget();
+                }
+            }
+        }).start();
     }
 
     private void doUploadNet(final String content){
@@ -160,9 +195,12 @@ public class MainMenuActivity extends BaseMenuActivity implements BaseMenuActivi
             case 0:
                 intent = new Intent(this,
                         CaptureActivity.class);
-                startActivityForResult(intent, REQUEST_CODE_SCAN);
+                startActivityForResult(intent, REQUEST_CODE_SCAN_RK);
                 break;
             case 1:
+                intent = new Intent(this,
+                        CaptureActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_SCAN_CK);
                 break;
             case 2:
                 intent = new Intent(this,
