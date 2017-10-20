@@ -208,6 +208,9 @@ public class MainMenuActivity extends BaseMenuActivity implements BaseMenuActivi
                 startActivity(intent);
                 break;
             case 3:
+                intent = new Intent(this,
+                        AppInfoActivity.class);
+                startActivity(intent);
                 break;
             case 4:
                 intent = new Intent(this, UserMenuActivity.class);

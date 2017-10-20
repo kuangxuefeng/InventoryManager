@@ -48,7 +48,8 @@
         <activity android:name=".activity.UserListActivity" />
         <activity android:name=".activity.LoadActivity" />
         <activity android:name=".activity.CommodityQueryActivity" />
-        <activity android:name=".activity.CommodityShowActivity"></activity>
+        <activity android:name=".activity.CommodityShowActivity" />
+        <activity android:name=".activity.AppInfoActivity"></activity>
     </application>
 
 </manifest>
