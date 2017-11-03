@@ -93,7 +93,12 @@ public class CommodityQueryActivity extends BaseListActivity implements AdapterV
                         }
                     });
                 }else {
-                    load_pb.setVisibility(View.GONE);
+                    mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            load_pb.setVisibility(View.GONE);
+                        }
+                    });
                     Message msg = handlerBase.obtainMessage(msg_base_http_erro);
                     msg.obj = heRe.getResponseMsg();
                     msg.sendToTarget();

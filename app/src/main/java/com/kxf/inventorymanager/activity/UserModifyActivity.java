@@ -282,6 +282,10 @@ public class UserModifyActivity extends BaseActivity implements OnClickListener 
 						}
 						return;
 					}
+				}else {
+					if (AppConfig.userCheckOnLine){
+						break;
+					}
 				}
 				Toast.makeText(UserModifyActivity.this, "注册成功", Toast.LENGTH_LONG).show();
 				finish();

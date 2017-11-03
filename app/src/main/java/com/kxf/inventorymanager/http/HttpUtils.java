@@ -20,7 +20,7 @@ import java.net.URL;
  */
 
 public class HttpUtils {
-    public static final String BASE_URL = "http://116.196.95.211:8080/InventoryManagerServer/servlet/";
+    public static final String BASE_URL = "http://192.168.1.100:8080/InventoryManagerServer/servlet/";//192.168.1.100  116.196.95.211
     public static final String USER_URL = "UserServlet";
     public static final String COMMODITY_URL = "CommodityServlet";
     public static String sendMsg(String urlItem, HttpEntity he) {
@@ -46,6 +46,10 @@ public class HttpUtils {
         // Post 请求不能使用缓存
         con.setUseCaches(false);
 
+        //设置超时时间
+        con.setConnectTimeout(10*1000);//设置连接主机超时（单位：毫秒）
+        con.setReadTimeout(30*1000);//设置从主机读取数据超时（单位：毫秒）
+
         // 设定传送的内容类型是可序列化的java对象
         // (如果不设此项,在传送序列化对象时,当WEB服务默认的不是这种类型时可能抛java.io.EOFException)
 //		con.setRequestProperty("Content-type", "application/x-java-serialized-object");
@@ -55,9 +59,16 @@ public class HttpUtils {
         con.setRequestMethod("POST");
 
         // 连接，从上述第2条中url.openConnection()至此的配置必须要在connect之前完成，
-        con.connect();
-
         Gson gson = new Gson();
+        try {
+            con.connect();
+        } catch (Exception e) {
+            e.printStackTrace();
+            he.setResponseCode(-200 + "");
+            he.setResponseMsg("通讯失败 code=" + -200);
+            return gson.toJson(he);
+        }
+
         String jstr = gson.toJson(he);
         LogUtil.d("jstr=" + jstr);
         jstr = EncUtil.encryptAsString(null, jstr);
@@ -81,7 +92,7 @@ public class HttpUtils {
         }else {
             he.setResponseCode(code + "");
             he.setResponseMsg("通讯失败 code=" + code);
-            sb.append(gson.toJson(he));
+            sb.append(EncUtil.encryptAsString(null, gson.toJson(he)));
         }
         LogUtil.d("sb=" + sb);
         con.disconnect();

@@ -12,6 +12,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class LogUtil {
@@ -92,6 +93,7 @@ public class LogUtil {
 
     private static void getLogFilePath(boolean isForceUpdate) {
         logFile = MyApplication.getShare(KeyLogFileName, "");
+        Log.e(LogUtil.class.getName(),logFile);
         if (TextUtils.isEmpty(logFile) || isForceUpdate) {
             logFile = AppConfig.folder_log + File.separator + AppConfig.sdf_no_split.format(new Date()) + ".txt";
             AppConfig.creatFile(new File(logFile));
@@ -105,9 +107,9 @@ public class LogUtil {
     }
 
     private static boolean writeFile(String TAG, String value) {
-//        String str = EncUtil.encryptAsString(MyDesKeyUtil.get3DesKeyDef(), TAG + " : " + value);
-//        return writeFile(str);
-        return false;
+        String str = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS").format(new Date()) + " " + TAG + " : " + value;
+        return writeFile(str);
+//        return false;
     }
 
     private static boolean writeFile(String str) {

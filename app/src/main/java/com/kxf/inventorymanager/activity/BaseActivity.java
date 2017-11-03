@@ -98,6 +98,10 @@ public class BaseActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         LogUtil.e(tag);
+        if (null != dialog && dialog.isShowing()){
+            dialog.dismiss();
+            dialog = null;
+        }
     }
 
     @Override
@@ -142,6 +146,7 @@ public class BaseActivity extends Activity {
             public void run() {
                 if (null != dialog && dialog.isShowing()){
                     dialog.dismiss();
+                    dialog = null;
                 }
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setMessage(FormatUtils.FormatStringLen(msg, 50, FormatUtils.ALIGN.CENTER, " ")).setCancelable(false).setTitle("提示");

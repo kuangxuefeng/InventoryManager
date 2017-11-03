@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     private Button btn_cancel = null;
     private Button btn_join = null;//btn_join
     private TextView tv_ver_info;
+    protected ProgressBar load_pb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         btn_join.setEnabled(true);
         tv_ver_info = (TextView) findViewById(R.id.tv_ver_info);
         tv_ver_info.setText("build in " + BuildConfig.buileDateTime);
+        load_pb = (ProgressBar) findViewById(R.id.load_pb);
     }
 
 
@@ -87,6 +90,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                 btn_login.setEnabled(false);
                 btn_cancel.setEnabled(false);
                 btn_join.setEnabled(false);
+                load_pb.setVisibility(View.VISIBLE);
                 checkInput();
 
 //                MyApplication.saveShare(KEY_USER_NAME, et_name.getText().toString().trim());
@@ -135,6 +139,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         @Override
         public void handleMessage(Message msg) {
             LogUtil.d("msg.what=" + msg.what);
+            load_pb.setVisibility(View.GONE);
             switch (msg.what) {
                 case 1000:
                     Gson gson = new Gson();
