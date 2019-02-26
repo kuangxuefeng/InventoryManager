@@ -33,10 +33,15 @@ String getDateTime() {
     return "\"" + time + "\"";
 }
 
+repositories {
+    flatDir { dirs 'libs' }
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/xutils-3.3.22.jar')
     compile files('libs/gson-2.1.jar')
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
+    compile(name: 'ExCardSDK', ext: 'aar')
 }

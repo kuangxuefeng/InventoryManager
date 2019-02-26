@@ -12,7 +12,7 @@ public class AppConfig {
     public static final SimpleDateFormat sdf_split = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss SSS");
     public static final SimpleDateFormat sdf_no_split = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 
-    public static final boolean userCheckOnLine = true;//用户信息联网校验
+    public static final boolean userCheckOnLine = false;//用户信息联网校验
 
     //----------------------------数据库--------------------------
     public static final String DB_NAME = "MyDB.db";//数据库名称

@@ -49,7 +49,9 @@
         <activity android:name=".activity.LoadActivity" />
         <activity android:name=".activity.CommodityQueryActivity" />
         <activity android:name=".activity.CommodityShowActivity" />
-        <activity android:name=".activity.AppInfoActivity"></activity>
+        <activity android:name=".activity.AppInfoActivity" />
+        <activity android:name=".activity.UtilsActivity" />
+        <activity android:name=".activity.IdScanActivity"></activity>
     </application>
 
 </manifest>

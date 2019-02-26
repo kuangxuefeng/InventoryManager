@@ -106,6 +106,17 @@
         android:visibility="gone"
         android:textColor="#00D000" />
 
+    <Button
+        android:id="@+id/btn_utils"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_join"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/selector_main_button"
+        android:text="工具"
+        android:textColor="#00D000" />
+
     <TextView
         android:id="@+id/tv_ver_info"
         android:layout_width="match_parent"

@@ -34,7 +34,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     private EditText et_pw = null;
     private Button btn_login = null;
     private Button btn_cancel = null;
-    private Button btn_join = null;//btn_join
+    private Button btn_join = null, btn_utils;//btn_join
     private TextView tv_ver_info;
     protected ProgressBar load_pb;
 
@@ -66,6 +66,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         btn_cancel.setOnClickListener(this);
         btn_join = (Button) findViewById(R.id.btn_join);
         btn_join.setOnClickListener(this);
+        btn_utils = (Button) findViewById(R.id.btn_utils);
+        btn_utils.setOnClickListener(this);
+
         btn_login.setEnabled(true);
         btn_cancel.setEnabled(true);
         btn_join.setEnabled(true);
@@ -74,9 +77,15 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         load_pb = (ProgressBar) findViewById(R.id.load_pb);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setBtnEnabled(true);
+    }
 
     @Override
     public void onClick(View v) {
+        Intent intent = null;
         switch (v.getId()) {
             case R.id.btn_login:
 
@@ -87,9 +96,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 //			startActivity(intent);
 //			LoginActivity.this.finish();
 
-                btn_login.setEnabled(false);
-                btn_cancel.setEnabled(false);
-                btn_join.setEnabled(false);
+                setBtnEnabled(false);
                 load_pb.setVisibility(View.VISIBLE);
                 checkInput();
 
@@ -98,22 +105,31 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                 break;
 
             case R.id.btn_cancel:
-                btn_login.setEnabled(false);
-                btn_cancel.setEnabled(false);
-                btn_join.setEnabled(false);
+                setBtnEnabled(false);
                 finish();
                 break;
             case R.id.btn_join:
-                btn_login.setEnabled(false);
-                btn_cancel.setEnabled(false);
-                btn_join.setEnabled(false);
+                setBtnEnabled(false);
 
-                Intent intent = new Intent(LoginActivity.this, UserModifyActivity.class);
+                intent = new Intent(LoginActivity.this, UserModifyActivity.class);
                 startActivityForResult(intent, 0);
+                break;
+
+            case R.id.btn_utils:
+                setBtnEnabled(false);
+                intent = new Intent(LoginActivity.this, UtilsActivity.class);
+                startActivity(intent);
                 break;
             default:
                 break;
         }
+    }
+
+    private void setBtnEnabled(boolean enabled){
+        btn_login.setEnabled(enabled);
+        btn_cancel.setEnabled(enabled);
+        btn_join.setEnabled(enabled);
+        btn_utils.setEnabled(enabled);
     }
 
     /**
@@ -123,9 +139,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         LogUtil.d("onActivityResult()......");
-        btn_login.setEnabled(true);
-        btn_cancel.setEnabled(true);
-        btn_join.setEnabled(true);
         LogUtil.d("requestCode=" + requestCode + "  resultCode=" + resultCode + "  data=" + data);
         if (data != null && requestCode == 0) {
             LogUtil.d("data!=null&&resultCode==RESULT_OK");
